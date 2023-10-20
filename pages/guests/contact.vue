@@ -23,12 +23,11 @@
             <td class="contact-time2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
               
               <!-- 予約ボタンを表示 -->
-              <button class="select-btn" @click="reservationClick(date, timeSlot)" :disabled="isReserved(date, timeSlot)" :class="{ 'clicked-button': isReserved(date, timeSlot) }"><span v-if="!isReserved(date, timeSlot)">〇</span><span v-else>✕</span></button>
+              <button class="select-btn" @click="reservationClick(date, timeSlot)" :disabled="isReserved(date, timeSlot)" :class="{ 'clicked-button': isReserved(date, timeSlot) }" :id="date + '_' + timeSlot"><span v-if="!isReserved(date, timeSlot)">〇</span><span v-else>✕</span></button>
             </td>
           </tr>
         </table>
       </div>
-      <NuxtLink to="/guests/input"><link-button /></NuxtLink>
     </div>
   </div>
 </template>
@@ -38,7 +37,7 @@
 import mv from '~/components/guests/mv.vue'
 import step01 from '~/components/guests/step01.vue'
 import LinkButton from '~/components/LinkButton.vue'
-
+import { mapState } from 'vuex'
 
 export default {
   layout: 'default',
@@ -50,16 +49,33 @@ export default {
   },
   data() {
     return {
+      shiftData: {
+        date: '',       // 日付を追加
+        startTime: '',  // 開始時間を追加
+        endTime: ''     // 終了時間を追加
+      },
+      shiftToUpdate: {
+        id: '',
+        date: '',
+        startTime: '',
+        endTime: ''
+      },
+      buttonStatusCache: {},
+     
+      shiftList: [],
+      customerData: [],
+      previousShiftList: [], // 前回のシフト一覧を保持するための変数
+
       startDate: new Date(), // 開始日を設定
       numDays: 7, // 表示する日数
       timeSlots: ['10:00', '11:00', '12:00', '13:00','14:00', '15:00', '16:00', '17:00',], // 時間帯のリスト
-      reservations: { // 予約情報を管理するデータ
-        reservationData: {}, // 初期化
-      }, 
+
     };
   },
   created() {
-    this.updateStartDate(); // コンポーネントが作成された際に開始日を設定
+    this.fetchCustomerData(() => {
+      this.updateButtonStatus();
+    });
   },
   computed: {
     dates() {
@@ -72,43 +88,187 @@ export default {
       }
       return dates;
     },
+    ...mapState(['reservationData']), // "reservation" はストアモジュールの名前
+  },
+
+  mounted() {
+    this.fetchShiftList(); // すべてカウンセラーのシフトデータを取得
+    this.fetchCustomerData();
+  },
+  watch: {
+    // ウォッチャーをここに追加
+    startDate(newDate, oldDate) {
+      if (newDate !== oldDate) {
+        this.fetchShiftList();
+        this.fetchCustomerData();
+      }
+    },
   },
   methods: {
-    updateStartDate() {
-      setInterval(() => {
-        const currentDate = new Date();
-        this.startDate = currentDate; // startDate を現在の日付に設定
-      },);
-    },
     getDayOfWeek(date) {
       // 日にちに対応する曜日を計算
       const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
-      const currentDate = new Date(date);
+      const currentDate = new Date(date.replace(/\//g, '-'));
       const dayIndex = currentDate.getDay();
       const month = currentDate.getMonth() + 1; // 月は0から始まるため+1する
       const day = currentDate.getDate();
       return `${month}月${day}日（${dayOfWeek[dayIndex]}）`;
     },
-    
+
     reservationClick(date, timeSlot) {
-      const key = date + timeSlot;
-      const reservationData = {
-        date: date,
-        timeSlot: timeSlot,
-      };
-      this.$store.commit('reservation/setReservationData', reservationData);
-      
-      // 別のページに遷移
-      this.$router.push('/guests/input');
-    },
-    isReserved(date, timeSlot) {
-      const key = date + timeSlot;
-      if (this.$store.state.reservation.reservationData) {
-        return this.$store.state.reservation.reservationData[key] || false;
+      if (!this.isReserved(date, timeSlot)) {
+        // 予約がない場合、予約を行う処理を実行する
+        // ここで実際の予約処理を行うか、予約データを更新するロジックを追加してください
+
+        // 予約成功の場合、✕にボタンを切り替えることができます
+        this.$set(this.customerData, `${date}-${timeSlot}`, true);
+        // ユーザーが選択した日時データをオブジェクトとしてまとめる
+        const reservationData = {
+          date: date,
+          timeSlot: timeSlot,
+        };
+
+        // reservationDataをストアに保存
+        this.$store.dispatch('saveReservationData', reservationData);
+        // inputページに遷移
+        this.$router.push({ path: '/guests/input', query: { date: date, timeSlot: timeSlot } });
       }
-      return false;
     },
-  },
+
+    // シフトデータを取得する関数
+    async fetchShiftList() {
+      try {
+        // 前回のデータをコピー
+        this.previousShiftList = [...this.shiftList];
+
+        const response = await this.$axios.get('http://localhost/api/all_shifts');
+        if (response && response.data && Array.isArray(response.data)) {
+          this.shiftList = response.data.map(shift => ({
+            id: shift.id,
+            date: shift.shift_date ? shift.shift_date.split(' ')[0] : '日付なし', // 日付を"YYYY-MM-DD"形式に整形
+            startTime: shift.start_time ? shift.start_time.slice(0, 5) : '00:00', // 時間を"HH:MM"形式に整形
+            endTime: shift.end_time ? shift.end_time.slice(0, 5) : '00:00', // 時間を"HH:MM"形式に整形
+          }));
+
+          if (!this.isShiftListEqual(this.shiftList, this.previousShiftList)) {
+            // シフト情報が変更された場合の処理を記述
+           
+          }
+
+          // シフト情報をもとに予約情報を設定
+          this.setReservations(this.shiftList);
+
+        }
+      } catch (error) {
+        console.error('一覧の取得に失敗しました。', error);
+      }
+    },
+
+    setReservations(shiftList) {
+      this.reservations = {}; // シフト情報を初期化
+
+      // シフト情報を設定
+      shiftList.forEach(shift => {
+        const date = shift.date;
+        const startTime = shift.startTime;
+        const endTime = shift.endTime;
+
+        if (!this.reservations[date]) {
+          this.reservations[date] = {};
+        }
+
+        // 対応する時間帯にシフト情報を設定
+        for (let time = startTime; time < endTime; time = this.getNextTimeSlot(time)) {
+          this.reservations[date][time] = true;
+        }
+      });
+      
+    },
+
+    getNextTimeSlot(time) {
+      // 次の時間帯を計算するヘルパーメソッド
+      // 例: '10:00' -> '11:00'
+      const [hours, minutes] = time.split(':');
+      const nextHours = parseInt(hours, 10) + 1;
+      return `${nextHours.toString().padStart(2, '0')}:${minutes}`;
+    },
+
+    isReserved(date, timeSlot) {
+      const formattedDate = date.replace(/\//g, '-'); // 例: "2023/10/22" -> "2023-10-22"
+      const formattedTimeSlot = `${timeSlot}`;
+      
+      const isReserved = !this.shiftList.some((shift) => {
+        const shiftDate = shift.date;
+        const shiftStartTime = shift.startTime.slice(0, 5); // フォーマットを整えて HH:MM 形式に
+        const shiftEndTime = shift.endTime.slice(0, 5); // フォーマットを整えて HH:MM 形式に
+
+        
+        // 整形後のフォーマットで比較
+        const result = shiftDate === formattedDate && shiftStartTime <= formattedTimeSlot && shiftEndTime >= formattedTimeSlot;
+
+        
+        return result;
+      });
+      
+      return isReserved;
+    },
+
+    // バックエンドからお客さんのデータを取得
+    async fetchCustomerData(callback) {
+      try {
+        const response = await this.$axios.get('http://localhost/api/guest');
+      
+        if (response && response.data) {
+          // バックエンドから取得したデータをフィルタリング
+          
+          this.customerData = response.data.map(item => ({
+            date: item.date.replace(/-/g, '/'),
+            timeSlot: item.timeSlot.substring(0, 5),
+          }));
+
+          // コールバック関数を実行
+          if (typeof callback === 'function') {
+            callback();
+          }
+          // データベースから取得した予約情報を reservations プロパティに設定
+          this.setReservations(this.customerData);
+          
+        }
+      } catch (error) {
+        console.error('お客さんのデータの取得に失敗しました。', error);
+      }
+    },
+
+    // カレンダーのボタンステータスを更新
+    updateButtonStatus() {
+      // カレンダーのボタンステータスを更新するコードを記述
+      this.dates.forEach(date => {
+        this.timeSlots.forEach(timeSlot => {
+          // カレンダーのボタンの ID を作成
+          const buttonId = `${date.replace(/\//g, '_')}_${timeSlot.replace(':', '-')}`;
+
+          
+          // 予約情報があるかどうかをチェック
+          const isReserved = this.customerData.some(reservation => {
+            return reservation.date === date && reservation.timeSlot === timeSlot;
+          });
+
+          // キャッシュオブジェクトにボタンのステータスを保存
+          this.buttonStatusCache[buttonId] = isReserved;
+
+          // 予約がある場合はボタンを非アクティブにする
+          const button = document.getElementById(buttonId);
+
+          if (button) {
+            button.disabled = isReserved;
+          }
+          
+        });
+      });
+    },
+
+
+  } 
 }
 </script>
 

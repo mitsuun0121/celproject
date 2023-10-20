@@ -20,7 +20,7 @@ export default {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=M+PLUS+1p',
       },
-    ]
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -30,7 +30,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '@/plugins/vee-validate.js' },
+    { src: '@/plugins/vee-validate.js', },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -48,14 +48,14 @@ export default {
       'M PLUS 1p': [300], /*'Kosugi Maru': [400],*/ 
       download: true,
       inject: true
-    }
+    },
   },
 
   fontawesome: {
     component: 'fa', // vueのtemplateで呼び出すときの名前
     icons: {
       solid: ['faEye', 'faEyeSlash', 'faCalendarDays', 'faPen', 'faList', 'faCheck'],
-    }
+    },
   },
 
 
@@ -64,56 +64,81 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    
   ],
 
   auth: {
-    /*redirect: {
-      login: '/login',
-      logout: '/login',
-      callback: false,
-    },*/
     strategies: {
-      'laravelJWT': {
-        provider: 'laravel/jwt',
+      'laravelUser': {
+        provider: 'laravel/jwt', // Laravel JWTトークンプロバイダーを指定
         url: 'http://localhost',
-        token: {
-          maxAge: 60 * 60
-        },
-        refreshToken: {
-          maxAge: 20160 * 60
+        
+        endpoints: {
+          login: { url: '/api/user/login', method: 'post' },
+          logout: { url: '/api/user/logout', method: 'post' },
+          user: { url: '/api/user/user', method: 'get' },
         },
 
+        token: {
+          property: 'access_token',
+          maxAge: 60 * 60,
+        },
+        refreshToken: {
+          property: 'refresh_token', 
+          maxAge: 20160 * 60, 
+        },
+      },
+
+      'laravelAdmin': {
+        provider: 'laravel/jwt', // Laravel JWTトークンプロバイダーを指定
+        url: 'http://localhost',
+
         endpoints: {
-          login: { url: '/login', method: 'post', propertyName: 'access_token' },
-          logout: { url: '/logout', method: 'post' },
-          refresh: { url: '/refresh', method: 'post', propertyName: 'access_token' },
-          user: { url: '/me', method: 'get', propertyName: false },
-        }
+          login: { url: '/api/admin/login', method: 'post' },
+          logout: { url: '/api/admin/logout', method: 'post' },
+          user: { url: '/api/admin/user', method: 'get' },
+        },
+
+        token: {
+          property: 'access_token',
+          maxAge: 60 * 60,
+        },
+        refreshToken: {
+          property: 'refresh_token',
+          maxAge: 20160 * 60,
+        },
       },
     },
   },
 
   router: {
+    
     //mode: "hash",
-     base: process.env.BASE_URL,
-    //middleware: ['user_auth']
+    //base: process.env.BASE_URL,
+    //middleware: ['auth'],
   },
+  
 
+  
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
 
-    //baseURL: "path/to/api_base/",
-    credentials: true
+    baseURL: 'http://localhost/api',
+    
+    // credentials: true,
   },
+
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: [
       "vee-validate/dist/rules"
-    ]
+    ],
   },
   
-  store: ['~/store/reservation.js'], // ストアモジュールのパスを指定
-  // ...
+  store: {
+    strict: process.env.NODE_ENV !== 'production',
+  },
+    
 }

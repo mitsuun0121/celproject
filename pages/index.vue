@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default {
   layout: 'default',
-  
+  //middleware: 'auth',
   components: {
     FontAwesomeIcon,
   },

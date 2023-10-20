@@ -44,8 +44,8 @@
             </ValidationProvider>
             <ValidationProvider mode='lazy' v-slot="{ errors }" rules="min:10|phone|required">
               <div class="form-group">
-                <label for="phone">電話番号<span class="must">必須</span></label>
-                <input type="tel" id="phone" v-model="formData.phone" name="電話番号" :class="{ 'has-error': errors.length > 0 }" placeholder="半角数字ハイフンなし">
+                <label for="tel">電話番号<span class="must">必須</span></label>
+                <input type="phone" id="phone" v-model="formData.phone" name="電話番号" :class="{ 'has-error': errors.length > 0 }" placeholder="半角数字ハイフンなし">
                 <div class="message">
                   <span class="error-message">{{ errors[0] }}</span>
                 </div>
@@ -116,17 +116,25 @@ export default {
         gender: '',
         message: '',
       },
+      isReservationSuccessful: false,
     };
   },
   created() {
-    // URL クエリパラメータからデータを取得して formData にセット
+    // 入力データを保持した状態に設定
     const formDataParam = this.$route.query.formData;
     if (formDataParam) {
       this.formData = JSON.parse(formDataParam);
     }
+
+    const queryData = this.$route.query;
+    if (queryData.date && queryData.timeSlot) {
+      // 希望日時のデータをフォームに設定
+      this.formData.date = queryData.date;
+      this.formData.timeSlot = queryData.timeSlot;
+    }
   },
   computed: {
-    ...mapState('reservation', ['reservationData']), // "reservation" はストアモジュールの名前
+    ...mapState(['reservationData']), // "reservation" はストアモジュールの名前
   },
   methods: {
     async guest() {
@@ -146,12 +154,11 @@ export default {
             date: this.reservationData.date,
             timeSlot: this.reservationData.timeSlot,
           };
-          
 
           await this.$router.push({ path: "/guests/comfilm", query });
           
-        } catch {
-
+        } catch (error) {
+          console.error('画面遷移時のエラー:', error);
         }
       }
     },
@@ -169,10 +176,16 @@ export default {
     calculateEndTime(startTime) {
       // ここで開始時間から1時間後の時間を計算し、返します
       // 例: "10:00" -> "11:00"
-      const [hour, minute] = startTime.split(':').map(Number);
-      const endTimeHour = hour + 1;
-      const endTimeMinute = minute;
-      return `${endTimeHour.toString().padStart(2, '0')}:${endTimeMinute.toString().padStart(2, '0')}`;
+      if (startTime) {
+        const [hour, minute] = startTime.split(':').map(Number);
+        const endTimeHour = hour + 1;
+        const endTimeMinute = minute;
+        return `${endTimeHour.toString().padStart(2, '0')}:${endTimeMinute.toString().padStart(2, '0')}`;
+      } else {
+        // startTimeがnullの場合にどのように処理するかを決定
+        // 例: エラーメッセージを返すか、デフォルト値を設定するか
+        return 'N/A'; // または他の適切なデフォルト値
+      }
     },
   },
 } 

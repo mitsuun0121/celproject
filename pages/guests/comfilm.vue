@@ -3,6 +3,7 @@
     <mv />
     <div class="section">
       <step03 />
+      <form @submit.prevent="guest">
       <div class="comfilm-outer">
         <div class="comfilm-inner">
           <span class="comfilm-time">希望日時</span>
@@ -43,6 +44,7 @@
         <button class="comfilm-btn" type="submit">送信する</button>
         <router-link class="input-btn" :to="{ path: '/guests/input', query: { formData: JSON.stringify(formData) } }">入力内容を変更する</router-link>
       </div>
+      </form>
     </div>
   </div>
 </template>
@@ -60,17 +62,42 @@ export default {
     step03,
     
   },
-  computed: {
-    ...mapState('reservation', ['reservationData']), // "reservation" はストアモジュールの名前
-    
-  },
-  async asyncData({ query }) {
-    // ルーターからデータを受け取り、ページで使用するために返します
-    return {
-      formData: query,
+   data() {
+     return {
+      formData: {
+        name: '',
+        kana: '',
+        email: '',
+        phone: '',
+        gender: '',
+        message: '',
+        date: '',
+        timeSlot: '',
+      },
       
+      isReservationSuccessful: false, // 送信が成功した場合に true に設定
     };
   },
+  created() {
+    const queryData = this.$route.query;
+    if (queryData.date && queryData.timeSlot) {
+      // 希望日時のデータをフォームに設定
+      this.formData.date = queryData.date;
+      this.formData.timeSlot = queryData.timeSlot;
+    }
+  },
+  computed: {
+    ...mapState(['reservationData']), // "reservation" はストアモジュールの名前
+    
+  },
+
+  // ルーターから顧客データを受け取り、確認フォームを表示
+  async asyncData({ query }) {
+    return {
+      formData: query,
+    };
+  },
+
   methods: {
     formatDateTime(date, timeSlot) {
       const parsedDate = new Date(date);
@@ -91,6 +118,23 @@ export default {
       const endTimeMinute = minute;
       return `${endTimeHour.toString().padStart(2, '0')}:${endTimeMinute.toString().padStart(2, '0')}`;
     },
+    async guest() {
+      try {
+        // フォームデータをLaravelバックエンドに送信
+        const response = await this.$axios.post('http://localhost/api/guest', this.formData);
+
+        // 送信成功時の処理
+        console.log('データが正常に送信されました:', response.data);
+
+        this.isReservationSuccessful = true; // 送信成功の場合、true に設定
+        
+        this.$router.push("/");
+        
+      } catch (error) {
+        // 送信エラー時の処理
+        console.error('データの送信中にエラーが発生しました:', error);
+      }
+    }, 
   },
 }
 

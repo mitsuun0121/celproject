@@ -3,10 +3,10 @@
     <div class="login">
       <div class="login-page">
         <div class="form">
-          <p class="form-title">Login</p>
+          <p class="form-title">Admin's Login</p>
           <form @submit.prevent="login">
-            <emailForm v-model="auth.email" />
-            <passwordForm v-model="auth.password" />
+            <emailForm v-model="email" />
+            <passwordForm v-model="password" />
             <button type="submit">Login</button>
           </form>
         </div>
@@ -26,46 +26,37 @@ export default {
 
   },
 
-  
   layout: 'default',
 
+  auth: false,
   data() {
     return {
-      Processing: false,
-      auth: {
-        email: '',
-        password: '',
-        error: false
-      }
+      email: '',
+      password: '',
     };
   },
   methods: {
     async login() {
-
-      this.auth.error = false
-      this.processing = true
-      
       // バリデーションを実行
       const isValid = await this.$refs.loginserver.validate();
 
       if (isValid) {
         // バリデーションが成功した場合、ログインを試行
         try {
-          await this.$auth.loginWith('Admin', { data: this.auth })
-            .then(() => {
-              this.processing = false
+          await this.$auth.loginWith('laravelAdmin', {
+            data: {
+              email: this.email,
+              password: this.password,
+            },
+
           });
-
-          this.$router.push("/admins/admin");
-
+          this.$router.push('/admins/management');
         } catch (error) {
-          console.log(error);
-          this.auth.error = true
-          this.processing = false
+          alert("メールアドレスまたはパスワードが間違っています");
         }
       }
     }
-  }, 
+  },
 } 
 </script>
 
@@ -116,12 +107,12 @@ export default {
 }
 
 .form button {
-  text-transform: uppercase;
   outline: 0;
   background: #4CAF50;
   width: 100%;
   border: 0;
   border-radius: 4px;
+  margin-top: 30px;
   padding: 15px;
   color: #FFFFFF;
   font-size: 16px;

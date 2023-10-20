@@ -3,11 +3,11 @@
     <div class="login">
       <div class="login-page">
         <div class="form">
-          <p class="form-title">ログイン</p>
+          <p class="form-title">Counselor's Login</p>
           <form @submit.prevent="login">
             <emailForm v-model="email" />
             <passwordForm v-model="password" />
-            <button type="submit">ログイン</button>
+            <button type="submit">Login</button>
           </form>
         </div>
       </div>
@@ -28,10 +28,11 @@ export default {
 
   layout: 'default',
 
+  auth: false,
   data() {
     return {
-      email: null,
-      password: null,
+      email: '',
+      password: '',
     };
   },
   methods: {
@@ -42,14 +43,14 @@ export default {
       if (isValid) {
         // バリデーションが成功した場合、ログインを試行
         try {
-          await this.$auth.loginWith("laravelJWT", {
+          await this.$auth.loginWith('laravelUser', {
             data: {
               email: this.email,
               password: this.password,
             },
             
           });
-          this.$router.push("/users/management");
+          this.$router.push('/users/management');
         } catch (error) {
           alert("メールアドレスまたはパスワードが間違っています");
         }
@@ -106,12 +107,12 @@ export default {
 }
 
 .form button {
-  text-transform: uppercase;
   outline: 0;
   background: #4CAF50;
   width: 100%;
   border: 0;
   border-radius: 4px;
+  margin-top: 30px;
   padding: 15px;
   color: #FFFFFF;
   font-size: 16px;
