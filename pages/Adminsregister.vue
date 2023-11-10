@@ -31,7 +31,7 @@ export default {
 
   },
 
-  layout: 'default',
+  layout: 'admin',
 
   auth: false,
   data() {
@@ -73,7 +73,7 @@ export default {
   top: 0;
   bottom: 0;
   right: 0;
-  background: #E5EDE9;
+  background: #ebf8de;
 }
 
 .register-page {

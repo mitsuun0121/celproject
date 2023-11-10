@@ -135,38 +135,48 @@ export default {
       // カウンセリング予約データをフォームから取得
       const formData = this.formData;
       const reservationdate = formData.date.replace(/\//g, "-");
-      const reservationTimeSlot = formData.timeSlot;
-
-      await this.fetchUserList();
-
+      const reservationTimeSlot = formData.timeSlot.replace(/:\d{1}$/, '');
+      const userList = await this.fetchUserList();
       const guestList = await this.fetchGuestList();
-
-      // 選択されている日時の予約データのuserIdを取得
-      const selectedReservationUserIds = guestList
-        .filter(reservation => reservation.date === reservationdate)
-        .map(reservation => reservation.user_id);
-
+      
       // シフト情報＝予約日時を検索
-      const matchedCounselor = this.allShiftList.filter(shift =>
-        shift.date === reservationdate &&
-        shift.startTime <= reservationTimeSlot &&
-        shift.endTime >= reservationTimeSlot &&
-        !selectedReservationUserIds.includes(shift.userId)
-      );
+      const matchedCounselor = [];
 
-      console.log('選択されている日時の予約の詳細:', matchedCounselor);
+      this.allShiftList.forEach(shift => {
+        if (shift.date === reservationdate && shift.startTime <= reservationTimeSlot && shift.endTime >= reservationTimeSlot) {
+          matchedCounselor.push(shift);
+        }
+      });
+      console.log('シフトのあるカウンセラー', matchedCounselor);
 
+      // 選択されている日時の予約データを抽出
+      const selectedReservationDetails = guestList
+        .filter(reservation => reservation.date === reservationdate)
+        .map(reservation => ({
+          date: reservation.date,
+          timeSlot: reservation.timeSlot,
+          userId: reservation.user_id,
+        }));
+
+      console.log('選択されている日時の予約の詳細:', selectedReservationDetails);
+
+      const toMatchedCounselor = userList.filter(user => {
+        // 予約されたカウンセラーを除外するための条件
+        return !selectedReservationDetails.includes(user.user_id);
+      });
+      console.log(guestList);
+      console.log('利用可能なカウンセラー:', toMatchedCounselor);
+
+      
       // 予約日時にシフト情報があるカウンセラーをランダムに選択
-      if (matchedCounselor.length > 0) {
-        const randomIndex = Math.floor(Math.random() * matchedCounselor.length);
-        const selectedCounselor = matchedCounselor[randomIndex];
+      if (toMatchedCounselor.length > 0) {
+        const randomIndex = Math.floor(Math.random() * toMatchedCounselor.length);
+        const selectedCounselor = toMatchedCounselor[randomIndex];
 
         // カウンセラーを設定
-        formData.user_id = selectedCounselor.userId;
+        formData.user_id = selectedCounselor.id;
 
-        console.log('選択されたカウンセラー:', selectedCounselor.userId);
-
-
+        console.log('選択されたカウンセラー:', selectedCounselor.id);
       } else {
         console.error('利用可能なカウンセラーが見つかりませんでした。');
       }
@@ -176,13 +186,13 @@ export default {
     // カウンセリング予約をデータベースに保存
     async guest() {
       try {
+
         // フォームデータを取得
         const formData = this.formData;
         const response = await this.$axios.post('http://localhost/api/guest', formData);
 
         console.log('データが正常に送信され、保存されました:', response.data);
         this.isReservationSuccessful = true;
-
 
         this.$router.push("/"); // ホームページなどへリダイレクト
       } catch (error) {

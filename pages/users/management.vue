@@ -1,68 +1,96 @@
 <template>
   <div>
     <div class="container">
-      <h2>ログイン状態:{{ $auth.loggedIn }}</h2>
-      <p v-if="$auth.loggedIn">Name : {{ $auth.user.name }}</p>
+      <div class="">
+        <h2>ログイン : {{ $auth.loggedIn }}</h2>
+        <a @click="logout">ログアウト</a>
+        <p v-if="$auth.loggedIn">Welcome to {{ $auth.user.name }} さん</p>
+      </div>
+      
+      <div>
+        <h2>シフト情報</h2>
+
+        <form @submit.prevent="userShift">
+          <label for="shift_date">日付</label>
+          <input type="date" name="shift_date" id="shift_date" v-model="shiftData.date">
+          <label for="start_time">開始時間</label>
+          <select name="start_time" id="start_time" v-model="shiftData.startTime">
+            <option value="09:00">09:00</option>
+            <option value="10:00">10:00</option>
+            <option value="11:00">11:00</option>
+          </select>
+          <label for="end_time">終了時間</label>
+          <select name="end_time" id="end_time" v-model="shiftData.endTime">
+            <option value="16:00">16:00</option>
+            <option value="17:00">17:00</option>
+            <option value="18:00">18:00</option>
+          </select>
+
+          <button type="submit">登録</button>
+        </form>
+
+        
+        <a href="">登録</a>
+        <a href="">登録一覧</a>
+        <ul>
+          <li v-for="shift in shiftList" :key="shift.id">
+            {{ shift.date }} - {{ shift.startTime }} - {{ shift.endTime }}
+            <button @click="editShift(shift)">編集</button>
+            <button @click="deleteShift(shift.id)">削除</button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- シフト編集フォーム -->
+      <div v-if="editingShift">
+        <h2>シフト編集</h2>
+        <form @submit.prevent="updateShift">
+          <label for="shift_date">日付</label>
+          <input type="date" name="shift_date" v-model="shiftToUpdate.date">
+          <label for="start_time">開始時間</label>
+          <select name="start_time" id="start_time" v-model="shiftToUpdate.startTime">
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+            </select>
+            <label for="end_time">終了時間</label>
+            <select name="end_time" id="end_time" v-model="shiftToUpdate.endTime">
+              <option value="16:00">16:00</option>
+              <option value="17:00">17:00</option>
+              <option value="18:00">18:00</option>
+            </select>
+          <button type="submit">更新</button>
+          <button @click="cancelEdit">キャンセル</button>
+        </form>
+      </div>
+
+      <div>
+        <h2>カウンセリング情報</h2>
+        <a href="">予約一覧</a>
+        <ul>
+          <li v-for="guest in guestList" :key="guest.id">
+            {{ guest.date }} - {{ formatTime(guest.timeSlot) }}
+            <button @click="guestDetails(guest)">詳細</button>
+            <button @click="deleteGuest(guest.id)">削除</button>
+          </li>
+        </ul>
+      </div>
+      <!-- 詳細データ表示用のモーダルウィンドウ -->
+      <div v-if="guestModal">
+        <div>
+          <h2>予約詳細</h2>
+          <p>日付: {{ selectGuest.date }}</p>
+          <p>時間: {{ formatTime(selectGuest.timeSlot) }}</p>
+          <p>名前: {{ selectGuest.name }}</p>
+          <p>フリガナ: {{ selectGuest.kana }}</p>
+          <p>メールアドレス: {{ selectGuest.email }}</p>
+          <p>電話番号: {{ selectGuest.phone }}</p>
+          <p>性別: {{ formatGender(selectGuest.gender) }}</p>
+          <p>お問い合わせ内容: {{ selectGuest.message }}</p>
+          <button @click="closeModal">閉じる</button>
+        </div>
+      </div>
     </div>
-    <a @click="logout">Logout</a>
-    <div>
-      <h2>シフト登録</h2>
-      <form @submit.prevent="userShift">
-        <label for="shift_date">日付</label>
-        <input type="date" name="shift_date" id="shift_date" v-model="shiftData.date">
-        <label for="start_time">開始時間</label>
-        <input type="time" name="start_time" id="start_time" v-model="shiftData.startTime">
-        <label for="end_time">終了時間</label>
-        <input type="time" name="end_time" id="end_time" v-model="shiftData.endTime">
-
-        <button type="submit">登録</button>
-      </form>
-
-      <h2>シフト一覧</h2>
-      <ul>
-        <li v-for="shift in shiftList" :key="shift.id">
-          {{ shift.date }} - {{ shift.startTime }} - {{ shift.endTime }}
-          <button @click="editShift(shift)">編集</button>
-          <button @click="deleteShift(shift.id)">削除</button>
-        </li>
-      </ul>
-    </div>
-
-    <!-- シフト編集フォーム -->
-    <div v-if="editingShift">
-      <h2>シフト編集</h2>
-      <form @submit.prevent="updateShift">
-        <label for="shift_date">日付</label>
-        <input type="date" name="shift_date" v-model="shiftToUpdate.date">
-        <label for="start_time">開始時間</label>
-        <input type="time" name="start_time" v-model="shiftToUpdate.startTime">
-        <label for="end_time">終了時間</label>
-        <input type="time" name="end_time" v-model="shiftToUpdate.endTime">
-        <button type="submit">更新</button>
-        <button @click="cancelEdit">キャンセル</button>
-      </form>
-    </div>
-
-    <div class="contact-table__outer">
-      <table class="contact-table">
-        <tr>
-          <td class="contact-date1">日時</td> <!-- 曜日を表示するヘッダーセル -->
-          <td class="contact-date2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
-              {{ getDayOfWeek(date) }}
-          </td>
-        </tr>
-    
-        <tr v-for="(timeSlot, timeIndex) in timeSlots" :key="timeIndex">
-          <td class="contact-time1">{{ timeSlot }}</td> <!-- 時間帯を表示 -->
-          <td class="contact-time2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
-          
-            <!-- シフトボタンを表示 -->
-            <button class="select-btn" @click="shiftonClick(date, timeSlot)" :disabled="isShift(date, timeSlot)" :class="{ 'clicked-button': isShift(date, timeSlot) }"><span v-if="!isShift(date, timeSlot)">カ</span><span v-else>ー</span></button>
-          </td>
-        </tr>
-      </table>
-    </div>
-
   </div>
 </template>
 
@@ -70,7 +98,7 @@
 
 export default {
   
-  layout: 'default',
+  layout: 'user',
   data() {
     return {
       shiftData: {
@@ -85,9 +113,16 @@ export default {
         startTime: '',
         endTime: ''
       },
+
+      user_id: null,  // またはデフォルトの担当者を設定
       editingShift: null, // 編集中のシフト
 
-      shiftList: [], // シフト情報の一覧を保存するための配列
+      allShiftList: [],
+      shiftList: [], // シフト情報の一覧を保存する配列
+      guestList: [], // 予約データを格納する配列
+      userList: [], // カウンセラーのデータを格納する配列
+      guestModal: false, // 詳細情報を非表示
+      selectGuest: null, // 選択した予約データを格納
 
       startDate: new Date(), // 開始日を設定
       numDays: 7, // 表示する日数
@@ -108,19 +143,24 @@ export default {
       return dates;
     },
   },
+
   mounted() {
     this.fetchShiftList(); 
-
+    this.fetchGuestList();
+    
   },
-  watch: {
-    // ウォッチャーをここに追加
-    startDate(newDate, oldDate) {
-      if (newDate !== oldDate) {
-        this.fetchShiftList();
+
+  methods: {
+
+    // ログアウト
+    async logout() {
+      try {
+        await this.$auth.logout();
+        this.$router.push('/users/login');
+      } catch (error) {
+        console.log(error);
       }
     },
-  },
-  methods: {
 
     // シフト登録
     async userShift() {
@@ -223,38 +263,79 @@ export default {
       }
     },
 
-    // ログアウト
-    async logout() {
-      try {
-        await this.$auth.logout();
-        this.$router.push("/users/login");
-      } catch (error) {
-        console.log(error);
+    // 予約時間の秒を表示しないように設定
+    formatTime(timeSlot) {
+      return timeSlot.slice(0, 5); // "HH:mm" 形式に整形
+    },
+
+    // 数値で取得されている性別を変換
+    formatGender(gender) {
+      if (gender === 1) {
+        return '男性';
+      } else if (gender === 2) {
+        return '女性';
+      } else {
+        return '無回答'; // 1、2以外の値の場合
       }
     },
 
-    getDayOfWeek(date) {
-      // 日にちに対応する曜日を計算
-      const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
-      const currentDate = new Date(date);
-      const dayIndex = currentDate.getDay();
-      const month = currentDate.getMonth() + 1; // 月は0から始まるため+1する
-      const day = currentDate.getDate();
-      return `${month}月${day}日（${dayOfWeek[dayIndex]}）`;
+    // 詳細情報を表示
+    guestDetails(guest) {
+      this.selectGuest = guest;
+      this.guestModal = true;
     },
 
-    isShift(date, timeSlot) {
-      const isShift = !this.shiftList.some((shift) => {
-        const shiftDate = new Date(shift.date).toLocaleDateString();
-        const compareDate = new Date(date).toLocaleDateString();
-        const timeSlotInRange = shift.startTime <= timeSlot && shift.endTime >= timeSlot;
-
-        return shiftDate === compareDate && timeSlotInRange;
-      });
-
-      return isShift;
+    // モーダルウィンドウを閉じる
+    closeModal() {
+      this.guestModal = false;
+      this.selectGuest = null;
     },
+
+    // カウンセリング予約一覧を取得
+    async fetchGuestList() {
+      try {
+        const response = await this.$axios.get('http://localhost/api/guest');
+
+        const loginUser = this.$auth.user.id;
+
+        const guestList = response.data;
+        this.guestList = guestList;
+
+        // 自分の担当のユーザーIDに紐づく予約データだけを抽出
+        const personGuestList = guestList.filter(guest => guest.user_id === loginUser);
+
+        this.guestList = personGuestList;
+
+      } catch (error) {
+        console.error('予約データの取得に失敗しました', error);
+      }
+    },
+
+    // ゲスト情報を削除
+    async deleteGuest(guestId) {
+      try {
+        const response = await this.$axios.delete(`http://localhost/api/guest/${guestId}`);
+
+        // 削除が成功した場合の処理
+        console.log('ゲストが削除されました:', response.data);
+
+        // ゲスト一覧を再読み込み
+        this.fetchGuestList();
+      } catch (error) {
+        console.error('ゲストの削除に失敗しました', error);
+      }
+    },
+
   }
-}
+} 
 
 </script>
+
+<style scoped>
+.container {
+  font-family: "Roboto";
+  width: 100%;
+  height: auto;
+  background-color: #fcfcfc;
+}
+</style>

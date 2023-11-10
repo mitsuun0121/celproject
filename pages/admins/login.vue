@@ -3,6 +3,8 @@
     <div class="login">
       <div class="login-page">
         <div class="form">
+          <div class="login-logo"><img src="~/assets/img/super-small.png" alt="ロゴ小">
+          </div>
           <p class="form-title">Admin's Login</p>
           <form @submit.prevent="login">
             <emailForm v-model="email" />
@@ -26,7 +28,7 @@ export default {
 
   },
 
-  layout: 'default',
+  layout: 'admin',
 
   auth: false,
   data() {
@@ -74,24 +76,31 @@ export default {
 .login-page {
   width: 100%;
   height: auto;
-  margin-top: 80px;
+  margin-top: 60px;
 }
 
 .form {
+  position: relative;
   max-width: 400px;
   width: 100%;
   margin: 0 auto;
-  padding: 80px;
+  padding: 100px 60px;
   text-align: center;
   background: #FFFFFF;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.login-logo {
+  position: absolute;
+  top: 15px;
+  left: 20px;
 }
 
 .form-title {
   font-size: 24px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  margin-top: -30px;
+  margin-top: -10px;
   margin-bottom: 40px;
 }
 

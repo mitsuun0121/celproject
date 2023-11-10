@@ -11,7 +11,7 @@
 <script>
 export default {
   
-  layout: 'default',
+  layout: 'admin',
 
 
   methods: {

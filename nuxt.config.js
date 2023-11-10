@@ -45,7 +45,7 @@ export default {
 
   googleFonts: {
     families: {
-      'M PLUS 1p': [300], /*'Kosugi Maru': [400],*/ 
+      /*'M PLUS 1p': [300],*/ 'Kosugi Maru': [400], 
       download: true,
       inject: true
     },
@@ -68,14 +68,19 @@ export default {
   ],
 
   auth: {
+    redirect: {
+      login: '/users/login',
+      logout: '/users/login',
+    },
     strategies: {
       'laravelUser': {
         provider: 'laravel/jwt', // Laravel JWTトークンプロバイダーを指定
         url: 'http://localhost',
         
         endpoints: {
-          login: { url: '/api/user/login', method: 'post' },
+          login: { url: '/api/user/login', method: 'post', propertyName: 'access_token' },
           logout: { url: '/api/user/logout', method: 'post' },
+          refresh: { url: '/api/user/refresh', method: 'post', propertyName: 'access_token' },
           user: { url: '/api/user/user', method: 'get' },
         },
 
@@ -96,6 +101,7 @@ export default {
         endpoints: {
           login: { url: '/api/admin/login', method: 'post' },
           logout: { url: '/api/admin/logout', method: 'post' },
+          refresh: { url: '/api/admin/refresh', method: 'post' },
           user: { url: '/api/admin/user', method: 'get' },
         },
 

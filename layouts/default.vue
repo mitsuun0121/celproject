@@ -1,16 +1,12 @@
 <template>
   <div>
-    <!--<site-header />
-
+    <site-header />
     <main-visual />
     <worry />
     <Solve />
-    <Coach />
     <Price />
-    <News />
-    
-    <Nuxt />
-    
+    <Coach />
+    <!--<News />
     <site-footer />-->
       
       <nuxt />
@@ -19,24 +15,26 @@
 
 <script>
 
-//import MainVisual from '~/components/MainVisual.vue'
-//import Worry from '~/components/Worry.vue'
-//import Solve from '~/components/Solve.vue'
-//import Coach from '~/components/Coach.vue'
-//import Price from '~/components/Price.vue'
-//import News from '~/components/News.vue'
-//import SiteFooter from '~/components/SiteFooter.vue'
+import SiteHeader from '~/components/lpTops/SiteHeader.vue'
+import MainVisual from '~/components/lpTops/MainVisual.vue'
+import Worry from '~/components/lpTops/Worry.vue'
+import Solve from '~/components/lpTops/Solve.vue'
+import Price from '~/components/lpTops/Price.vue'
+import Coach from '~/components/lpTops/Coach.vue'
+//import News from '~/components/lpTops/News.vue'
+//import SiteFooter from '~/components/lpTops/SiteFooter.vue'
 
 export default {
   components: {
-    
-    //MainVisual,
-    //Worry,
-    //Solve,
-    //Coach,
-    //Price,
+
+    SiteHeader,
+    MainVisual,
+    Worry,
+    Solve,
+    Price,
+    Coach,
     //News,
-    //iteFooter
+    //SiteFooter
     
     
   }
@@ -44,13 +42,12 @@ export default {
 </script>
 
 <style>
-/*--------------------------------
-  全ページ共通
----------------------------------*/
-img {
-  max-width: 100%;
-  height: auto;
-  vertical-align: bottom;
+
+body {
+  font-family: "Kosugi Maru", "Roboto";
+  margin: 0;
+  padding: 0;
+  
 }
 
 a {
@@ -64,19 +61,6 @@ a:hover {
   opacity: 0.8;
   cursor: pointer;
   
-}
-
-.content {
-  margin: 0 auto;
-  /*padding: 0 30px;*/
-}
-
-.title {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 170px;
 }
 
 </style>

@@ -8,14 +8,7 @@ export const state = () => ({
         date: null,
         timeSlot: null,
     },
-    /*formData: {
-        name: '',
-        kana: '',
-        email: '',
-        phone: '',
-        gender: '',
-        message: '',
-    },*/
+    
 });
 
 export const mutations = {
@@ -23,9 +16,7 @@ export const mutations = {
         // ステート内の予約データを更新
         state.reservationData = data;
     },
-    /*setFormData(state, formData) {
-        state.formData = formData;
-    },*/
+    
 };
 
 export const actions = {

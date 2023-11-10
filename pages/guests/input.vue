@@ -100,7 +100,7 @@ import { mapState } from 'vuex'
 
 
 export default {
-  layout: 'default',
+  layout: 'guest',
   components: {
     mv,
     step02,
@@ -162,8 +162,10 @@ export default {
         }
       }
     },
+
     formatDateTime(date, timeSlot) {
       const parsedDate = new Date(date);
+      parsedDate.getDate();
       const formattedDate = `${parsedDate.getFullYear()}年${parsedDate.getMonth() + 1}月${parsedDate.getDate()}日`;
 
       // 時間帯のフォーマット（10:00から11:00のように）
@@ -172,6 +174,7 @@ export default {
 
       return `${formattedDate} ${startTime}～${endTime}`;
     },
+
     // 時間帯の終了時間を計算するメソッド
     calculateEndTime(startTime) {
       // ここで開始時間から1時間後の時間を計算し、返します
@@ -187,19 +190,21 @@ export default {
         return 'N/A'; // または他の適切なデフォルト値
       }
     },
+    
   },
 } 
 </script>
 
 <style scoped>
 .container {
+  font-family: "Kosugi Maru";
   width: 100%;
   height: 2500px;
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
-  background-color: #E5EDE9;
+  background-color: #ebf8de;
   
 }
 
@@ -255,9 +260,9 @@ export default {
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.05em;
-  margin-top: -20px;
+  margin-top: -10px;
   margin-left: -255px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .form-input__outer {
@@ -286,7 +291,7 @@ label {
   border: 1px solid #ff0000;
   border-radius: 4px;
   background-color: #f9c6c6;
-  padding: 0 5px;
+  padding: 3px 5px;
   margin-left: 5px;
   
 }
@@ -365,14 +370,16 @@ textarea {
 .btn-container {
   text-align: center;
 }
+
 .input-btn {
+  font-family: "Kosugi Maru";
   font-size: 22px;
   color: #FFFFFF;
   letter-spacing: 0.1em;
   background-color: #3DAB3B;
   border: none;
   margin-top: 10px;
-  padding: 20px 30px;
+  padding: 25px 30px;
   border-radius: 40px;
   transition: 0.7s;
 }
@@ -389,6 +396,7 @@ textarea {
   height: 30px;
   margin-top: 10px;
   margin-left: 25px;
+  
 }
 .error-message {
   font-size: 16px;

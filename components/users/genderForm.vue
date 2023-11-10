@@ -1,9 +1,11 @@
 <template>
   <div>
     <ValidationProvider mode='lazy' v-slot="{ errors }" rules="required">
-      <label for="gender">性別</label>
-      <input type="radio" id="male" value="1" v-model="gender" name="性別" :class="{ 'has-error': errors.length > 0 }"><span class="radio-gender">男性</span>
-      <input type="radio" id="female" value="2" v-model="gender" name="性別" :class="{ 'has-error': errors.length > 0 }"><span class="radio-gender">女性</span>
+      <div class="gender-container">
+        <label for="gender">性別</label>
+        <input class="radio" type="radio" id="male" value="1" v-model="gender" name="性別" :class="{ 'has-error': errors.length > 0 }"><span class="radio-gender">男性</span>
+        <input class="radio" type="radio" id="female" value="2" v-model="gender" name="性別" :class="{ 'has-error': errors.length > 0 }"><span class="radio-gender">女性</span>
+      </div>
       <div class="message">
         <span class="error-message">{{ errors[0] }}</span>
       </div>
@@ -31,13 +33,28 @@ export default {
 </script>
 
 <style scoped>
-label {
-  font-size: 16px;
-  margin-right: 270px;
-  line-height: 2.0;
-  letter-spacing: 0.05em;
+.gender-container {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+	width: fit-content;
+	gap: 1rem;
 }
 
+label {
+  font-size: 16px;
+  line-height: 2.0;
+  letter-spacing: 0.05em;
+  margin-left: 7px;
+}
+
+.radio {
+  margin-top: -2px;
+}
+
+.radio-gender {
+  margin-left: -10px;
+}
 .message {
   text-align: left;
   margin: 0 auto;

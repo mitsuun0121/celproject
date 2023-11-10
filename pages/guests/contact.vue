@@ -8,83 +8,80 @@
           <p class="contact-number">STEP 01</p>
           <p class="contact-text">カウンセリング希望日時を選択してください。</p>
         </div>
+        <div class="contact-btn-outer">
+          <button class="contact-btn" @click="nextWeek" v-if="currentWeek < 1">翌週<span class="contact-btn-arrow">＞</span></button>
+          <button class="contact-btn" @click="thisWeek" v-if="currentWeek > 0">＜<span class="contact-btn-arrow">戻る</span></button>
+        </div>
       </div>
+      
       <div class="contact-table__outer">
         <table class="contact-table">
           <tr>
             <td class="contact-date1">日時</td> <!-- 曜日を表示するヘッダーセル -->
             <td class="contact-date2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
-               {{ getDayOfWeek(date) }}
+               {{ getDayWeek(date) }}
             </td>
           </tr>
-        
           <tr v-for="(timeSlot, timeIndex) in timeSlots" :key="timeIndex">
             <td class="contact-time1">{{ timeSlot }}</td> <!-- 時間帯を表示 -->
             <td class="contact-time2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
               
               <!-- 予約ボタンを表示 -->
-              <button class="select-btn" @click="reservationClick(date, timeSlot)" :disabled="isReserved(date, timeSlot)" :class="{ 'clicked-button': isReserved(date, timeSlot) }" :id="date + '_' + timeSlot"><span v-if="!isReserved(date, timeSlot)">〇</span><span v-else>✕</span></button>
+              <button class="select-btn" @click="reservationClick(date, timeSlot)" :disabled="!reserved(date, timeSlot)" :class="{ 'clicked-button': !reserved(date, timeSlot) }"><span v-if="reserved(date, timeSlot)">〇</span><span v-else>✕</span></button>
             </td>
           </tr>
         </table>
+      </div>
+      <div class="contact-detail">
+        <p class="contact-text">※当日のご予約をご希望の際は、お電話にてお問い合わせください。</p>
       </div>
     </div>
   </div>
 </template>
 
-
 <script>
 import mv from '~/components/guests/mv.vue'
 import step01 from '~/components/guests/step01.vue'
-import LinkButton from '~/components/LinkButton.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'vuex'
 
 export default {
-  layout: 'default',
+  layout: 'guest',
   components: {
     mv,
     step01,
-    LinkButton
+    FontAwesomeIcon,
+    
     
   },
   data() {
     return {
-      shiftData: {
-        date: '',       // 日付を追加
-        startTime: '',  // 開始時間を追加
-        endTime: ''     // 終了時間を追加
-      },
-      shiftToUpdate: {
-        id: '',
-        date: '',
-        startTime: '',
-        endTime: ''
-      },
-      buttonStatusCache: {},
-     
-      shiftList: [],
-      customerData: [],
-      previousShiftList: [], // 前回のシフト一覧を保持するための変数
 
+
+      guestData: [],
+      allShiftList: [],
+      
       startDate: new Date(), // 開始日を設定
       numDays: 7, // 表示する日数
       timeSlots: ['10:00', '11:00', '12:00', '13:00','14:00', '15:00', '16:00', '17:00',], // 時間帯のリスト
-
+      currentWeek: 0, // 現在の週を初期化
     };
   },
-  created() {
-    this.fetchCustomerData(() => {
-      this.updateButtonStatus();
-    });
-  },
+  
   computed: {
     dates() {
       // 開始日から指定した日数分の日にちを計算
       const dates = [];
+      const startDate = new Date(this.startDate);
+      startDate.setDate(startDate.getDate() + 7 * this.currentWeek); // 7日ごとに週を切り替える
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
       for (let i = 0; i < this.numDays; i++) {
-        const currentDate = new Date(this.startDate);
-        currentDate.setDate(this.startDate.getDate() + i);
-        dates.push(currentDate.toLocaleDateString());
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+
+        const formattedDate = currentDate.toLocaleDateString(undefined, options);
+        dates.push(formattedDate);
       }
       return dates;
     },
@@ -92,100 +89,103 @@ export default {
   },
 
   mounted() {
-    this.fetchShiftList(); // すべてカウンセラーのシフトデータを取得
-    this.fetchCustomerData();
+    this.fetchAllShiftList(); // 全カウンセラーのシフトデータを取得
+    this.fetchGuestData();
+    
   },
-  watch: {
+  /*watch: {
     // ウォッチャーをここに追加
     startDate(newDate, oldDate) {
       if (newDate !== oldDate) {
         this.fetchShiftList();
-        this.fetchCustomerData();
+        
       }
     },
-  },
+  },*/
+
   methods: {
-    getDayOfWeek(date) {
+
+    // 予約日時を表示
+    getDayWeek(date) {
       // 日にちに対応する曜日を計算
-      const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+      const dayWeek = ['日', '月', '火', '水', '木', '金', '土'];
       const currentDate = new Date(date.replace(/\//g, '-'));
       const dayIndex = currentDate.getDay();
       const month = currentDate.getMonth() + 1; // 月は0から始まるため+1する
       const day = currentDate.getDate();
-      return `${month}月${day}日（${dayOfWeek[dayIndex]}）`;
+      return `${month}月${day}日（${dayWeek[dayIndex]}）`;
     },
 
+    // 現在の週を1週進める
+    nextWeek() {
+      this.currentWeek++; 
+    },
+
+    // 今週に戻る
+    thisWeek() {
+      this.currentWeek--; 
+    },
+
+    // ipput.vueへ遷移するための関数
     reservationClick(date, timeSlot) {
-      if (!this.isReserved(date, timeSlot)) {
-        // 予約がない場合、予約を行う処理を実行する
-        // ここで実際の予約処理を行うか、予約データを更新するロジックを追加してください
-
-        // 予約成功の場合、✕にボタンを切り替えることができます
-        this.$set(this.customerData, `${date}-${timeSlot}`, true);
-        // ユーザーが選択した日時データをオブジェクトとしてまとめる
-        const reservationData = {
-          date: date,
-          timeSlot: timeSlot,
-        };
-
-        // reservationDataをストアに保存
-        this.$store.dispatch('saveReservationData', reservationData);
-        // inputページに遷移
-        this.$router.push({ path: '/guests/input', query: { date: date, timeSlot: timeSlot } });
-      }
+      // 選択した日時データをオブジェクトとしてまとめる
+      const reservationData = {
+        date: date,
+        timeSlot: timeSlot,
+      };
+      
+      // reservationDataをストアに保存
+      this.$store.dispatch('saveReservationData', reservationData);
+      
+      // inputページに遷移
+      this.$router.push({ path: '/guests/input', query: { date: date, timeSlot: timeSlot } });
+      
     },
 
-    // シフトデータを取得する関数
-    async fetchShiftList() {
+    // 全シフトデータを取得する関数
+    async fetchAllShiftList() {
       try {
-        // 前回のデータをコピー
-        this.previousShiftList = [...this.shiftList];
-
-        const response = await this.$axios.get('http://localhost/api/all_shifts');
+        const response = await this.$axios.get('http://localhost/api/all_shift');
         if (response && response.data && Array.isArray(response.data)) {
-          this.shiftList = response.data.map(shift => ({
-            id: shift.id,
+          this.allShiftList = response.data.map(shift => ({
+            userId: shift.user_id,
             date: shift.shift_date ? shift.shift_date.split(' ')[0] : '日付なし', // 日付を"YYYY-MM-DD"形式に整形
             startTime: shift.start_time ? shift.start_time.slice(0, 5) : '00:00', // 時間を"HH:MM"形式に整形
             endTime: shift.end_time ? shift.end_time.slice(0, 5) : '00:00', // 時間を"HH:MM"形式に整形
           }));
 
-          if (!this.isShiftListEqual(this.shiftList, this.previousShiftList)) {
-            // シフト情報が変更された場合の処理を記述
-           
-          }
+          const allShiftList = {};
 
-          // シフト情報をもとに予約情報を設定
-          this.setReservations(this.shiftList);
+          this.allShiftList.forEach(shift => {
+            const userId = shift.userId;
+            const date = shift.date;
+            const startTime = shift.startTime;
+            const endTime = shift.endTime;
 
+            // 必要なプロパティが存在しない場合は初期化する
+            if (!allShiftList[userId]) {
+              allShiftList[userId] = {};
+            }
+            if (!allShiftList[userId][date]) {
+              allShiftList[userId][date] = {};
+            }
+
+            // 対応する時間帯にシフト情報を設定
+            for (let time = startTime; time <= endTime; time = this.nextTimeSlot(time)) {
+              if (!allShiftList[userId][date][time]) {
+                allShiftList[userId][date][time] = [];
+              }
+              allShiftList[userId][date][time].push({ userId });
+            }
+          });
+          
         }
       } catch (error) {
         console.error('一覧の取得に失敗しました。', error);
       }
     },
 
-    setReservations(shiftList) {
-      this.reservations = {}; // シフト情報を初期化
-
-      // シフト情報を設定
-      shiftList.forEach(shift => {
-        const date = shift.date;
-        const startTime = shift.startTime;
-        const endTime = shift.endTime;
-
-        if (!this.reservations[date]) {
-          this.reservations[date] = {};
-        }
-
-        // 対応する時間帯にシフト情報を設定
-        for (let time = startTime; time < endTime; time = this.getNextTimeSlot(time)) {
-          this.reservations[date][time] = true;
-        }
-      });
-      
-    },
-
-    getNextTimeSlot(time) {
+    nextTimeSlot(time) {
       // 次の時間帯を計算するヘルパーメソッド
       // 例: '10:00' -> '11:00'
       const [hours, minutes] = time.split(':');
@@ -193,80 +193,55 @@ export default {
       return `${nextHours.toString().padStart(2, '0')}:${minutes}`;
     },
 
-    isReserved(date, timeSlot) {
-      const formattedDate = date.replace(/\//g, '-'); // 例: "2023/10/22" -> "2023-10-22"
-      const formattedTimeSlot = `${timeSlot}`;
-      
-      const isReserved = !this.shiftList.some((shift) => {
+    // 予約ボタンの非アクティブ/アクティブ状態を判定するメソッド
+    reserved(date, timeSlot) {
+      const formatDate = date.replace(/\//g, '-').split('-').map(function (part) { return part.padStart(2, '0'); }).join('-');
+      const formatTimeSlot = timeSlot;
+
+      // お客さんの予約日時をチェック
+      const guestReserved = this.guestData.filter(item => {
+        const guestDate = item.date;
+        const guestTimeSlot = item.timeSlot.slice(0, 5);
+        return guestDate === formatDate && guestTimeSlot === formatTimeSlot;
+      }).length;
+
+      // カウンセラーのシフト日時をチェック
+      const counselorShift = this.allShiftList.filter(shift => {
         const shiftDate = shift.date;
-        const shiftStartTime = shift.startTime.slice(0, 5); // フォーマットを整えて HH:MM 形式に
-        const shiftEndTime = shift.endTime.slice(0, 5); // フォーマットを整えて HH:MM 形式に
+        const shiftStartTime = shift.startTime.slice(0, 5);
+        const shiftEndTime = shift.endTime.slice(0, 5);
+        return shiftDate === formatDate && shiftStartTime <= formatTimeSlot && shiftEndTime >= formatTimeSlot;
+      }).length;
 
-        
-        // 整形後のフォーマットで比較
-        const result = shiftDate === formattedDate && shiftStartTime <= formattedTimeSlot && shiftEndTime >= formattedTimeSlot;
-
-        
-        return result;
-      });
+      // 予約とシフトを比較して日時ボタンのアクティブ非アクティブを決定
+      if (guestReserved === counselorShift) {
+        return false;
+      }
       
-      return isReserved;
+      // 当日は終日非アクティブ
+      if (date === this.dates[0] && this.timeSlots.indexOf(timeSlot) >= 0) {
+        return false;
+      }
+      return counselorShift;
     },
 
     // バックエンドからお客さんのデータを取得
-    async fetchCustomerData(callback) {
+    async fetchGuestData() {
       try {
         const response = await this.$axios.get('http://localhost/api/guest');
       
         if (response && response.data) {
           // バックエンドから取得したデータをフィルタリング
-          
-          this.customerData = response.data.map(item => ({
-            date: item.date.replace(/-/g, '/'),
+          this.guestData = response.data.map(item => ({
+            date: item.date.replace(/-/g, '-'),
             timeSlot: item.timeSlot.substring(0, 5),
           }));
-
-          // コールバック関数を実行
-          if (typeof callback === 'function') {
-            callback();
-          }
-          // データベースから取得した予約情報を reservations プロパティに設定
-          this.setReservations(this.customerData);
-          
         }
+        this.guestCount = this.guestData.length; // 予約の数を取得
       } catch (error) {
         console.error('お客さんのデータの取得に失敗しました。', error);
       }
     },
-
-    // カレンダーのボタンステータスを更新
-    updateButtonStatus() {
-      // カレンダーのボタンステータスを更新するコードを記述
-      this.dates.forEach(date => {
-        this.timeSlots.forEach(timeSlot => {
-          // カレンダーのボタンの ID を作成
-          const buttonId = `${date.replace(/\//g, '_')}_${timeSlot.replace(':', '-')}`;
-
-          
-          // 予約情報があるかどうかをチェック
-          const isReserved = this.customerData.some(reservation => {
-            return reservation.date === date && reservation.timeSlot === timeSlot;
-          });
-
-          // キャッシュオブジェクトにボタンのステータスを保存
-          this.buttonStatusCache[buttonId] = isReserved;
-
-          // 予約がある場合はボタンを非アクティブにする
-          const button = document.getElementById(buttonId);
-
-          if (button) {
-            button.disabled = isReserved;
-          }
-          
-        });
-      });
-    },
-
 
   } 
 }
@@ -274,14 +249,14 @@ export default {
 
 <style scoped>
 .container {
+  font-family: "Kosugi Maru";
   width: 100%;
   height: 1750px;
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
-  background-color: #E5EDE9;
-  
+  background-color: #ebf8de;
 }
 
 .section {
@@ -295,14 +270,13 @@ export default {
 .contact-outer {
   display: flex;
   justify-content: center;
- 
+  column-gap: 150px;
 }
 
 .contact-number {
   font-size: 24px;
   font-weight: bold;
   margin-top: 70px;
-  margin-left: -395px;
 }
 
 .contact-text {
@@ -310,7 +284,37 @@ export default {
   font-weight: bold;
   letter-spacing: 0.05em;
   margin-top: -10px;
-  margin-left: -395px;
+}
+
+.contact-btn-outer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 70px;
+  margin-left: 200px;
+}
+
+.contact-btn {
+  font-family: "Kosugi Maru";
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.contact-btn-arrow {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.contact-detail {
+  text-align: center;
+  margin-top: 30px;
+  margin-left: -270px;
 }
 
 .contact-table__outer {

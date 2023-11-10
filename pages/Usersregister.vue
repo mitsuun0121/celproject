@@ -34,7 +34,7 @@ export default {
 
   },
 
-  layout: 'default',
+  layout: 'user',
 
   auth: false,
   data() {
@@ -53,7 +53,7 @@ export default {
       if (isValid) {
         // バリデーションが成功した場合、新規登録を実行
         try {
-          await this.$axios.post("http://localhost/api/auth/register", {
+          await this.$axios.post("http://localhost/api/user/register", {
             name: this.name,
             gender: this.gender,
             email: this.email,
@@ -78,13 +78,13 @@ export default {
   top: 0;
   bottom: 0;
   right: 0;
-  background: #E5EDE9;
+  background: #ebf8de;
 }
 
 .register-page {
   width: 100%;
   height: auto;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .form {
