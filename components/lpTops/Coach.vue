@@ -34,8 +34,8 @@ export default {
   mounted() {
 
     const options = {
-      root: null, // 交差を検出する親要素またはビューポートを指定
-      rootMargin: '0px', // 要素が画面内に1ピクセルでも表示されたら交差が検出
+      root: null, // 交差を検出するビューポートを指定
+      rootMargin: '0px', // 要素が画面内に1ピクセルでも表示されたら実行
       threshold: 0.5, // 50%以上表示されたらコールバックを実行
     };
 
@@ -45,7 +45,6 @@ export default {
     
     observer.observe(this.$refs.bulb1);
     observer1.observe(this.$refs.bulb2);
-    
   },
 
   methods: {
@@ -66,15 +65,12 @@ export default {
     },
     // アニメーションの開始処理
     startAnimation(targetElement) {
-      targetElement.classList.add('bulb1'); // classを追加
+      targetElement.classList.add('bulb1');
       targetElement.classList.add('bulb2');
-
     },
   }
 }
-
 </script >
-
 
 <style scoped>
 .container {
@@ -141,7 +137,7 @@ export default {
   position: relative;
   display: flex;
   justify-content: center;
-  margin-bottom: 60px;
+  margin-bottom: 120px;
 }
 
 .coach-number {
@@ -150,25 +146,25 @@ export default {
 }
 
 .coach-name {
-  font-size: 25px;
+  font-size: 24px;
   letter-spacing: 0.05em;
   line-height: 1.5;
   padding: 40px;
-  padding-left: 200px;
-  margin-left: 150px;
+  padding-left: 220px;
+  margin-left: 100px;
   border-radius: 16px;
   background-color: #FFFFFF;
   box-shadow: 3px 3px  5px rgba(0, 0, 0, 0.3);
 }
 
 .coach-text {
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: 0.1em;
 }
 
 .btn-container {
-  margin-top: 120px;
-  padding-bottom: 120px;
+  margin-top: 140px;
+  padding-bottom: 140px;
   text-align: center;
 }
 

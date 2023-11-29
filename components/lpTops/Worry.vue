@@ -44,8 +44,8 @@ export default {
   mounted() {
 
     const options = {
-      root: null, // 交差を検出する親要素またはビューポートを指定
-      rootMargin: '0px', // 要素が画面内に1ピクセルでも表示されたら交差が検出
+      root: null, // 交差を検出するビューポートを指定
+      rootMargin: '0px', // 要素が画面内に1ピクセルでも表示されたら実行
       threshold: 0.5, // 50%以上表示されたらコールバックを実行
     };
 
@@ -87,7 +87,6 @@ export default {
     },
   }
 }
-
 </script>
 
 <style scoped>
@@ -163,8 +162,8 @@ export default {
 }
 
 .worry-item {
-  width: 650px;
-  padding: 20px;
+  width: 660px;
+  padding: 40px;
   background-color: #FFFFFF;
   border: 1px solid #b9b6b6;
   border-radius: 120px;
@@ -173,7 +172,7 @@ export default {
 /*--------- フェードアップアニメーション -------*/
 .worry-text {
   text-align: center;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: 0.05em;
   line-height: 2.0;
   opacity: 0; /* 初期状態：非表示 */
@@ -256,5 +255,4 @@ export default {
   border: 1px solid #b9b6b6;
   border-radius: 50%;
 }
-
 </style>

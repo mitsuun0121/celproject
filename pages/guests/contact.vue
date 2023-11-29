@@ -1,40 +1,46 @@
 <template>
-  <div class="container">
-    <mv />
-    <div class="section">
-      <step01 />
-      <div class="contact-outer">
-        <div class="contact-inner">
-          <p class="contact-number">STEP 01</p>
-          <p class="contact-text">カウンセリング希望日時を選択してください。</p>
+  <div>
+    <div class="container">
+      <mv />
+      <div class="section">
+        <step01 />
+        <div class="contact-outer">
+          <div class="contact-inner">
+            <p class="contact-number">STEP 01</p>
+            <span class="contact-text">カウンセリング希望日時を選択してください。</span>
+            <div class="contact-btn-outer">
+              <button class="contact-btn" @click="nextWeek" v-if="currentWeek < 1">翌週<span class="contact-btn-arrow">＞</span></button>
+              <button class="contact-btn" @click="thisWeek" v-if="currentWeek > 0">＜<span class="contact-btn-arrow">戻る</span></button>
+            </div>
+          </div>
         </div>
-        <div class="contact-btn-outer">
-          <button class="contact-btn" @click="nextWeek" v-if="currentWeek < 1">翌週<span class="contact-btn-arrow">＞</span></button>
-          <button class="contact-btn" @click="thisWeek" v-if="currentWeek > 0">＜<span class="contact-btn-arrow">戻る</span></button>
+        
+        <div class="contact-table__outer">
+          <table class="contact-table">
+            <tr>
+              <td class="contact-date1">日時</td> <!-- 曜日を表示するヘッダーセル -->
+              <td class="contact-date2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
+                {{ getDayWeek(date) }}
+              </td>
+            </tr>
+            <tr v-for="(timeSlot, timeIndex) in timeSlots" :key="timeIndex">
+              <td class="contact-time1">{{ timeSlot }}</td> <!-- 時間帯を表示 -->
+              <td class="contact-time2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
+                
+                <!-- 予約ボタンを表示 -->
+                <button class="select-btn" @click="reservationClick(date, timeSlot)" :disabled="!reserved(date, timeSlot)" :class="{ 'clicked-button': !reserved(date, timeSlot) }"><span v-if="reserved(date, timeSlot)">〇</span><span v-else>✕</span></button>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="contact-detail">
+          <p class="contact-text">※当日のご予約をご希望の際は、お電話にてお問い合わせください。</p>
         </div>
       </div>
-      
-      <div class="contact-table__outer">
-        <table class="contact-table">
-          <tr>
-            <td class="contact-date1">日時</td> <!-- 曜日を表示するヘッダーセル -->
-            <td class="contact-date2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
-               {{ getDayWeek(date) }}
-            </td>
-          </tr>
-          <tr v-for="(timeSlot, timeIndex) in timeSlots" :key="timeIndex">
-            <td class="contact-time1">{{ timeSlot }}</td> <!-- 時間帯を表示 -->
-            <td class="contact-time2" v-for="(date, dateIndex) in dates" :key="dateIndex" >
-              
-              <!-- 予約ボタンを表示 -->
-              <button class="select-btn" @click="reservationClick(date, timeSlot)" :disabled="!reserved(date, timeSlot)" :class="{ 'clicked-button': !reserved(date, timeSlot) }"><span v-if="reserved(date, timeSlot)">〇</span><span v-else>✕</span></button>
-            </td>
-          </tr>
-        </table>
+      <div class="btn-container">
+        <router-link class="input-btn" :to="{ path: '/' }">トップページに戻る</router-link>
       </div>
-      <div class="contact-detail">
-        <p class="contact-text">※当日のご予約をご希望の際は、お電話にてお問い合わせください。</p>
-      </div>
+      <site-footer />
     </div>
   </div>
 </template>
@@ -42,25 +48,27 @@
 <script>
 import mv from '~/components/guests/mv.vue'
 import step01 from '~/components/guests/step01.vue'
+import SiteFooter from '~/components/lpTops/SiteFooter.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'vuex'
 
 export default {
+
   layout: 'guest',
+
+  auth: false,
+
   components: {
     mv,
     step01,
+    SiteFooter,
     FontAwesomeIcon,
-    
-    
   },
+
   data() {
     return {
-
-
       guestData: [],
       allShiftList: [],
-      
       startDate: new Date(), // 開始日を設定
       numDays: 7, // 表示する日数
       timeSlots: ['10:00', '11:00', '12:00', '13:00','14:00', '15:00', '16:00', '17:00',], // 時間帯のリスト
@@ -93,15 +101,6 @@ export default {
     this.fetchGuestData();
     
   },
-  /*watch: {
-    // ウォッチャーをここに追加
-    startDate(newDate, oldDate) {
-      if (newDate !== oldDate) {
-        this.fetchShiftList();
-        
-      }
-    },
-  },*/
 
   methods: {
 
@@ -251,47 +250,45 @@ export default {
 .container {
   font-family: "Kosugi Maru";
   width: 100%;
-  height: 1750px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  height: auto;
   background-color: #ebf8de;
 }
 
 .section {
-  width: 75%;
-  height: auto;
-  margin-left: 12.5%;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
   padding-bottom: 70px;
   background-color: #FFFFFF;
 }
 
 .contact-outer {
-  display: flex;
-  justify-content: center;
-  column-gap: 150px;
+  position: relative;
+  width: 80%;
+  margin-left: 10.5%;
+  padding-bottom: 20px;
 }
 
 .contact-number {
   font-size: 24px;
   font-weight: bold;
   margin-top: 70px;
+  margin-bottom: 15px;
 }
 
 .contact-text {
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.05em;
-  margin-top: -10px;
+  margin-top: -20px;
+  white-space: nowrap;
 }
 
 .contact-btn-outer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 70px;
-  margin-left: 200px;
+  position: absolute;
+  top: 30px;
+  right: 9px;
+  white-space: nowrap;
 }
 
 .contact-btn {
@@ -303,6 +300,7 @@ export default {
   padding: 10px 15px;
   border-radius: 4px;
   cursor: pointer;
+  background-color: #e3e3e3;
 }
 
 .contact-btn-arrow {
@@ -312,9 +310,9 @@ export default {
 }
 
 .contact-detail {
-  text-align: center;
-  margin-top: 30px;
-  margin-left: -270px;
+  width: 80%;
+  margin-left: 10.5%;
+  margin-top: 40px;
 }
 
 .contact-table__outer {
@@ -323,7 +321,7 @@ export default {
 }
 
 .contact-table {
-  width: 800px;
+  width: 80%;
   color: #FFFFFF;
 }
 
@@ -357,26 +355,53 @@ export default {
 }
 
 .contact-time2 {
-  background-color: #969996;
+  background-color: #ededed;
   border: 1px solid #FFFFFF;
   border-radius: 4px;
 }
 
 .select-btn {
   font-size: 22px;
+  color: #333;
   border: none;
   width: 100%;
   height: 55px;
   cursor: pointer;
 }
 
+.select-btn:disabled {
+  background-color: #bbbaba;
+}
 .select-btn:hover {
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
 .clicked-button {
   cursor: default; /* クリックイベントを無効にし、カーソルをデフォルトに変更 */
   opacity: 1 !important;  /* 透明度を変更しない */
+}
+
+.btn-container {
+  margin-top: 100px;
+  margin-bottom: 100px;
+  text-align: center;
+}
+
+.input-btn {
+  font-family: "Kosugi Maru";
+  font-size: 22px;
+  color: #FFFFFF;
+  letter-spacing: 0.1em;
+  background-color: #3DAB3B;
+  border: none;
+  margin-top: 10px;
+  padding: 25px 30px;
+  border-radius: 40px;
+  transition: 0.7s;
+}
+
+.input-btn:hover {
+  opacity: 0.8;
 }
 
 </style>

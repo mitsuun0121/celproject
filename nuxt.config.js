@@ -25,7 +25,8 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '@fortawesome/fontawesome-svg-core/styles.css'
+    '@fortawesome/fontawesome-svg-core/styles.css',
+    '@mdi/font/css/materialdesignicons.css',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -40,6 +41,7 @@ export default {
   buildModules: [
     '@nuxtjs/google-fonts',
     '@nuxtjs/fontawesome',
+    
     
   ],
 
@@ -64,13 +66,13 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
-    
+    '@nuxtjs/vuetify',
   ],
 
   auth: {
     redirect: {
-      login: '/users/login',
-      logout: '/users/login',
+      login: '/login',
+      logout: '/login',
     },
     strategies: {
       'laravelUser': {
@@ -118,10 +120,8 @@ export default {
   },
 
   router: {
-    
-    //mode: "hash",
-    //base: process.env.BASE_URL,
-    //middleware: ['auth'],
+    base: process.env.BASE_URL,
+    middleware: ['auth'],
   },
   
 
@@ -146,5 +146,12 @@ export default {
   store: {
     strict: process.env.NODE_ENV !== 'production',
   },
+
+  
+  vuetify: {
+    customVariables: { src: '@/assets/variables.scss', },
+    treeShake: true,
+  },
+  
     
 }

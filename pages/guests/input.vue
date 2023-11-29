@@ -90,20 +90,27 @@
         </ValidationObserver>
       </div>
     </div>
+    <site-footer />
   </div>
 </template>
 
 <script>
 import mv from '~/components/guests/mv.vue'
 import step02 from '~/components/guests/step02.vue'
+import SiteFooter from '~/components/lpTops/SiteFooter.vue'
 import { mapState } from 'vuex'
 
 
 export default {
+
   layout: 'guest',
+  
+  auth: false,
+
   components: {
     mv,
     step02,
+    SiteFooter,
     
   },
   data() {
@@ -199,20 +206,18 @@ export default {
 .container {
   font-family: "Kosugi Maru";
   width: 100%;
-  height: 2500px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  height: auto;
   background-color: #ebf8de;
   
 }
 
 .section {
-  width: 75%;
+  width: 80%;
   height: auto;
-  margin-left: 12.5%;
-  padding-bottom: 70px;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding-bottom: 20px;
+  margin-bottom: 70px;
   background-color: #FFFFFF;
 }
 
@@ -260,7 +265,7 @@ export default {
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.05em;
-  margin-top: -10px;
+  margin-top: 20px;
   margin-left: -255px;
   margin-bottom: 30px;
 }
@@ -313,8 +318,8 @@ label {
   
 .radio-gender {
   position: relative;
-  top: 6px;
-  right: 10px;
+  top: 2px;
+  right: 6px;
   white-space: nowrap;
 }
 
@@ -379,6 +384,7 @@ textarea {
   background-color: #3DAB3B;
   border: none;
   margin-top: 10px;
+  margin-bottom: 50px;
   padding: 25px 30px;
   border-radius: 40px;
   transition: 0.7s;
@@ -387,7 +393,6 @@ textarea {
 .input-btn:hover {
   opacity: 0.8;
 }
-
 
 /* バリデーション */
 .message {

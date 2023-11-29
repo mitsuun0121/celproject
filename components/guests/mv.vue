@@ -12,13 +12,13 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 400px;
+  height: 100%;
 }
 
 .mv-text {
   display: block;
   position: relative;
-  top: 180px;
+  top: 240px;
   z-index: 2; 
   text-align: center;
   font-size: 32px;
@@ -26,23 +26,23 @@
 }
 
 .mv-img {
-  width: 75%;
-  height: 400px;
+  width: 80%;
+  height: 500px;
   background-image: url("~@/assets/img/contact.jpg");
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: center;
+  background-position: center top -60px;
   
 }
 
 .mv-img::after {
   content: "";
   display: block;
-  width: 75%;
+  width: 80%;
   height: 150px;
   background: rgba(38, 141, 60, 0.5);
   position: absolute;
-  top: 130px;
+  top: 180px;
   z-index: 1;
 }
 

@@ -56,6 +56,7 @@
   font-weight: bold;
   letter-spacing: 0.2em;
   color: rgb(248, 135, 135);
+  margin-top: 30px;
   animation-name:fadeInAnime;
   animation-duration:3s;
   animation-fill-mode:forwards;

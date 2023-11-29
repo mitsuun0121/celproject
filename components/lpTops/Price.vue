@@ -72,8 +72,8 @@ export default {
 
   mounted() {
     const options = {
-      root: null, // 交差を検出する親要素またはビューポートを指定
-      rootMargin: '0px', // 要素が画面内に1ピクセルでも表示されたら交差が検出
+      root: null, // 交差を検出するビューポートを指定
+      rootMargin: '0px', // 要素が画面内に1ピクセルでも表示されたら実行
       threshold: 0.1, // 10%以上表示されたらコールバックを実行
     };
 
@@ -101,7 +101,7 @@ export default {
           } else if (entry.target === this.$refs.feature) {
             setTimeout(() => {
               this.startAnimation(this.$refs.feature);
-            }, 500);
+            }, 300);
           } 
 
         }
@@ -174,9 +174,9 @@ export default {
   background-color: #FFFFFF;
   border: 1px solid #b9b6b6;
   padding-bottom: 280px;
-  left: 250px;/* 初期位置：画面左外 */
+  left: 200px;/* 初期位置：画面左外 */
   opacity: 0; 
-  transition: left 1s, opacity 1s;
+  transition: left 0.6s, opacity 1s;
 }
 
 .slide-right {
@@ -189,9 +189,9 @@ export default {
   background-color: #FFFFFF;
   border: 1px solid #b9b6b6;
   padding-bottom: 280px;
-  left: -250px;/* 初期位置：画面左外 */
+  left: -200px;/* 初期位置：画面左外 */
   opacity: 0; 
-  transition: left 1s, opacity 1s;
+  transition: left 0.6s, opacity 1s;
 }
 
 .slide-left {
@@ -267,7 +267,7 @@ export default {
 }
 
 .price-time {
-  width: 200px;
+  width: 300px;
   font-size: 20px;
   letter-spacing: 0.05em;
   text-align: center;
@@ -283,7 +283,7 @@ export default {
   display: flex;
   justify-content: center;
   transform: scale(0.8);
-  transition: transform 0.5s, opacity 1s;
+  transition: transform 0.3s, opacity 1s;
   opacity:0;
 }
 /*-------------------------------------------*/
@@ -303,6 +303,7 @@ export default {
   padding-left: 300px;
   padding-right: 290px;
   padding-top: 20px;
+  padding-bottom: 20px;
   background-color: #DEDEDE;
 }
 
@@ -315,6 +316,8 @@ export default {
   column-gap: 20px;
   padding-left: 300px;
   padding-right: 363px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   background-color: #DEDEDE;
 }
 
@@ -327,6 +330,7 @@ export default {
   column-gap: 20px;
   padding-left: 300px;
   padding-right: 250px;
+  padding-top: 20px;
   padding-bottom: 20px;
   background-color: #DEDEDE;
 }

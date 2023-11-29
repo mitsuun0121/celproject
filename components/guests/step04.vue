@@ -2,7 +2,7 @@
   <div class="step-container">
     <div v-for="(step, index) in steps" :key="index" class="step-area">
       <p class="step-number">STEP 0{{ index + 1 }}</p>
-      <div :class="['circle', index === 0 ? 'custom-color-circle' : '']"><font-awesome-icon :icon="step.icon" class="step-icon" /></div>
+      <div :class="['circle', index === 3 ? 'custom-color-circle' : '']"><font-awesome-icon :icon="step.icon" class="step-icon" /></div>
       <p class="step-text">{{ step.message }}</p>
     </div>
   </div>

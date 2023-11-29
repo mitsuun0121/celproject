@@ -1,7 +1,7 @@
 <template>
   <div>
     <ValidationProvider mode='lazy' v-slot="{ errors }" rules="email|required">
-      <label for="email">Email</label>
+      <label for="email">メールアドレス</label>
       <input v-model="email" name="メールアドレス" placeholder="test@example.com" :class="{ 'has-error': errors.length > 0 }" />
       <div class="message">
         <span class="error-message">{{ errors[0] }}</span>
@@ -31,10 +31,11 @@ export default {
 
 <style scoped>
 label {
-  font-size: 16px;
-  margin-right: 340px;
+  font-size: 14px;
+  margin-right: 280px;
   line-height: 2.0;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .message {
@@ -51,5 +52,4 @@ label {
 .has-error {
   background: #f9c6c6;
 }
-
 </style>

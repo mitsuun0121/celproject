@@ -1,20 +1,16 @@
 <template>
   <div>
-    <div class="container"></div>
-      
+    
   </div>
 </template>
 
 <script>
-
-
 export default {
   layout: 'default',
-  
-  
+
+  auth: false,
 }
 </script>
 
 <style>
- 
 </style>

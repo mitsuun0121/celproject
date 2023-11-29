@@ -1,7 +1,7 @@
 <template>
   <div>
     <ValidationProvider mode='lazy' v-slot="{ errors }" rules="min:8|max:16|required|password">
-      <label for="password">Password</label>
+      <label for="password">パスワード</label>
       <div class="password-area">
         <input class="password-input" :type="inputType" v-model="password" name="パスワード" placeholder="半角英数字（8～16字以内）" :class="{ 'has-error': errors.length > 0 }" />
         <span class="password-click" @click="onClick">
@@ -56,7 +56,7 @@ export default {
 
 <style scoped>
 label {
-  font-size: 16px;
+  font-size: 14px;
   margin-right: 310px;
   line-height: 2.0;
   letter-spacing: 0.05em;
@@ -99,5 +99,4 @@ label {
 .has-error {
   background: #f9c6c6;
 }
-
 </style>

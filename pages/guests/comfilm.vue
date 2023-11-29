@@ -46,20 +46,27 @@
       </div>
       </form>
     </div>
+    <site-footer />
   </div>
 </template>
 
 <script>
 import mv from '~/components/guests/mv.vue'
 import step03 from '~/components/guests/step03.vue'
+import SiteFooter from '~/components/lpTops/SiteFooter.vue'
 import { mapState } from 'vuex'
 
 
 export default {
+
   layout: 'guest',
+
+  auth: false,
+  
   components: {
     mv,
     step03,
+    SiteFooter,
     
   },
    data() {
@@ -96,7 +103,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['reservationData']), // "reservation" はストアモジュールの名前
+    ...mapState(['reservationData']), // ストアモジュールの名前
     
   },
 
@@ -135,15 +142,17 @@ export default {
       // カウンセリング予約データをフォームから取得
       const formData = this.formData;
       const reservationdate = formData.date.replace(/\//g, "-");
-      const reservationTimeSlot = formData.timeSlot;
-
+      const reservationTimeSlot = formData.timeSlot + ":00";
+      console.log(formData.date);
+      console.log(formData.timeSlot);
       await this.fetchUserList();
 
       const guestList = await this.fetchGuestList();
 
       // 選択されている日時の予約データのuserIdを取得
       const selectedReservationUserIds = guestList
-        .filter(reservation => reservation.date === reservationdate)
+        .filter(reservation => reservation.date === reservationdate &&
+          reservation.timeSlot === reservationTimeSlot)
         .map(reservation => reservation.user_id);
 
       // シフト情報＝予約日時を検索
@@ -154,7 +163,7 @@ export default {
         !selectedReservationUserIds.includes(shift.userId)
       );
 
-      console.log('選択されている日時の予約の詳細:', matchedCounselor);
+      console.log('選択日時に対応可能なカウンセラー:', matchedCounselor);
 
       // 予約日時にシフト情報があるカウンセラーをランダムに選択
       if (matchedCounselor.length > 0) {
@@ -183,8 +192,8 @@ export default {
         console.log('データが正常に送信され、保存されました:', response.data);
         this.isReservationSuccessful = true;
 
+        this.$router.push("/guests/thanks");
 
-        this.$router.push("/"); // ホームページなどへリダイレクト
       } catch (error) {
         console.error('データの送信中にエラーが発生しました:', error);
         // エラーメッセージなどを表示
@@ -276,19 +285,17 @@ export default {
 .container {
   font-family: "Kosugi Maru";
   width: 100%;
-  height: 2500px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  height: auto;
   background-color: #ebf8de;
 }
 
 .section {
-  width: 75%;
+  width: 80%;
   height: auto;
-  margin-left: 12.5%;
-  padding-bottom: 70px;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 80px;
+  padding-bottom: 60px;
   background-color: #FFFFFF;
 }
 
@@ -296,6 +303,8 @@ export default {
   display: flex;
   justify-content: center;
   position: relative;
+  width: 80%;
+  margin-left: 10.5%;
   margin-top: 80px;
 }
 
@@ -325,7 +334,7 @@ export default {
   font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.05em;
-  margin-top: -10px;
+  margin-top: 20px;
   margin-left: -350px;
   margin-bottom: 50px;
 }
@@ -347,7 +356,7 @@ td {
 }
 
 td.list {
-  width: 150px;
+  width: 220px;
   background-color: whitesmoke;
 }
 
@@ -363,7 +372,7 @@ td.list {
   background-color: #3DAB3B;
   border: none;
   margin-top: 60px;
-  margin-left: 250px;
+  margin-left: 230px;
   padding: 25px 60px;
   border-radius: 40px;
   transition: 0.7s;
@@ -380,8 +389,8 @@ td.list {
   letter-spacing: 0.1em;
   background-color: #babeb8;
   border: none;
-  margin-left: 50px;
-  padding: 15px 30px;
+  margin-left: 30px;
+  padding: 15px 20px;
   border-radius: 40px;
   transition: 0.7s;
   opacity: 0.7;
@@ -391,5 +400,11 @@ td.list {
  .input-btn:hover {
   opacity: 1;
  }
+
+ .footer {
+  text-align: center;
+  background-color: #fffff4;
+  padding: 50px 0;
+}
 
 </style>

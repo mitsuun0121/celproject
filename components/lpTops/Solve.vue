@@ -80,13 +80,14 @@
           <p class="solve-featue-item">解決方法を実践</p>
         </div>
       </div>
-      <div class="solve-feature">
-        <img class="object3" src="~/assets/img/action.png" alt="アクション">
+      <div class="solve-feature-outer3">
+        <div class="solve-feature">
+          <img class="object4" src="~/assets/img/feedback.png" alt="フィードバック">
+        </div>
+        <div class="solve-feature">
+          <img class="object3" src="~/assets/img/action.png" alt="アクション">
+        </div>
       </div>
-      <div class="solve-feature">
-        <img class="object4" src="~/assets/img/feedback.png" alt="フィードバック">
-      </div>
-
       <div class="solve-feature">
         <img class="arrow5" src="~/assets/img/arrow5.png" ref="arrowE" alt="矢印5">
       </div>
@@ -111,8 +112,8 @@ export default {
 
   mounted() {
     const options = {
-      root: null, // 交差を検出する親要素またはビューポートを指定
-      rootMargin: '0px', // 要素が画面内に1ピクセルでも表示されたら交差が検出
+      root: null, // 交差を検出するビューポートを指定
+      rootMargin: '0px', // 要素が画面内に1ピクセルでも表示されたら実行
       threshold: 0.6, // 60%以上表示されたらコールバックを実行
     };
 
@@ -169,7 +170,7 @@ export default {
 
     // アニメーションの開始処理
     startAnimation(targetElement) {
-      targetElement.classList.add('fade-up'); // classを追加
+      targetElement.classList.add('fade-up');
       targetElement.classList.add('slide-in');
       targetElement.classList.add('arrowA');
       targetElement.classList.add('arrowB');
@@ -242,20 +243,19 @@ export default {
 }
 
 .solve-group {
-  width: 530px;
+  width: 600px;
   margin-top: 40px;
   margin-bottom: 80px;
   margin-left: 180px;
-  padding-left: 70px;
-  padding-right: 30px;
-  padding-bottom: 25px;
+  padding-left: 50px;
+  padding-bottom: 50px;
   background-color: #FFFFFF;
   border: 1px solid #b9b6b6;
 }
 
 .solve-coaching {
   position: absolute;
-  top: 50px;
+  top: 80px;
   z-index: 1;
   margin-right: 560px;
   width: 180px;
@@ -265,7 +265,7 @@ export default {
 
 .solve-feedback {
   position: absolute;
-  top: 55px;
+  top: 87px;
   z-index: 1;
   margin-right: 560px;
   width: 160px;
@@ -276,7 +276,7 @@ export default {
 .solve-item {
   font-size: 28px;
   letter-spacing: 0.2em;
-  
+  margin-top: 30px;
 }
 
 .solve-item-sub {
@@ -288,6 +288,7 @@ export default {
   font-size: 24px;
   letter-spacing: 0.1em;
   margin-left: -1px;
+  margin-top: 15px;
 }
 
 .solve-title-sub {
@@ -298,8 +299,8 @@ export default {
 .solve-text {
   font-size: 20px;
   letter-spacing: 0.05em;
-  line-height: 0.5;
-  
+  line-height: 0.01;
+  margin-top: 40px;
 }
 
 /*--------- スライドインアニメーション -------*/
@@ -321,7 +322,7 @@ export default {
 .solve-feature {
   position: relative;
   text-align: center;
-  
+  margin-top: 30px;
 }
 
 .solve-feature1 {
@@ -368,42 +369,49 @@ export default {
   column-gap: 90px;
 }
 
+.solve-feature-outer3 {
+  display: flex;
+  justify-content: center;
+  column-gap: 350px;
+  margin-top: -60px;
+}
+
 .solve-feature-inner1 {
   position: relative;
-  width: 220px;
+  width: 240px;
   background-color: #f64949;
   text-align: center;
-  padding: 15px 20px;
+  padding: 30px 20px;
   border-radius: 4px;
   box-shadow: 3px 3px  5px rgba(0, 0, 0, 0.3);
 }
 
 .solve-feature-inner2 {
   position: relative;
-  width: 220px;
+  width: 240px;
   background-color: #3DAB3B;
   text-align: center;
-  padding: 15px 20px;
+  padding: 30px 20px;
   border-radius: 4px;
   box-shadow: 3px 3px  5px rgba(0, 0, 0, 0.3);
 }
 
 .solve-feature-inner3, .solve-feature-inner4 {
   position: relative;
-  width: 220px;
+  width: 240px;
   background-color: #3DAB3B;
   text-align: center;
-  padding: 15px 20px;
+  padding: 30px 20px;
   border-radius: 4px;
   box-shadow: 3px 3px  5px rgba(0, 0, 0, 0.3);
 }
 
 .solve-feature-inner5 {
   position: relative;
-  width: 220px;
+  width: 240px;
   background-color: #0E74D2;
   text-align: center;
-  padding: 15px 20px;
+  padding: 30px 20px;
   border-radius: 4px;
   box-shadow: 3px 3px  5px rgba(0, 0, 0, 0.3);
 }
@@ -412,44 +420,43 @@ export default {
   font-size: 22px;
   letter-spacing: 0.2em;
   color: #FFFFFF;
+  margin-top: 20px;
 }
 
 .solve-featue-item {
   font-size: 16px;
   letter-spacing: 0.1em;
   color: #FFFFFF;
-  margin-top: -10px;
+  margin-top: 20px;
   margin-bottom: 30px;
 }
 
 .object1 {
-  margin-top: -25px;
+  margin-top: -60px;
   width: 150px;
   filter:drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
 }
 
 .object2 {
-  margin-top: -25px;
+  margin-top: -60px;
   width: 180px;
   filter:drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
 }
 
 .object3 {
-  margin-top: -25px;
-  margin-left: 560px;
+  margin-right: 20px;
   width: 160px;
   filter:drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
 }
 
 .object4 {
-  margin-top: -110px;
-  margin-right: 560px;
+  margin-right: 20px;
   width: 200px;
   filter:drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
 }
 
 .object5 {
-  margin-top: -30px;
+  margin-top: -60px;
   width: 220px;
   filter:drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
 }

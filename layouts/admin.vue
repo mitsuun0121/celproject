@@ -1,18 +1,13 @@
 <template>
-  <div>
-    
-      
-      <nuxt />
+  <div>    
+    <nuxt />
   </div>
 </template>
 
 <script>
 </script>
 
-<style>
-/*--------------------------------
-  全ページ共通
----------------------------------*/
+<style scoped>
 body {
   font-family: "Roboto";
   margin: 0;
@@ -32,7 +27,5 @@ a:hover {
   cursor: pointer;
   
 }
-
-
 
 </style>

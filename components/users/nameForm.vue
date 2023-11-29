@@ -1,7 +1,7 @@
 <template>
   <div>
     <ValidationProvider mode='lazy' v-slot="{ errors }" rules="required">
-      <label for="name">名前</label>
+      <label for="name">Name</label>
       <input v-model="name" name="名前" placeholder="山田　太郎" :class="{ 'has-error': errors.length > 0 }"/>
       <div class="message">
         <span class="error-message">{{ errors[0] }}</span>
@@ -35,7 +35,7 @@ label {
   font-size: 16px;
   margin-right: 350px;
   line-height: 2.0;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .message {

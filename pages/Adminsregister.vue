@@ -22,7 +22,7 @@
 import nameForm from '~/components/users/nameForm.vue'
 import emailForm from '~/components/users/emailForm.vue'
 import passwordForm from '~/components/users/passwordForm.vue'
-import axios from 'axios';
+
 export default {
   components: {
     nameForm,
@@ -54,7 +54,7 @@ export default {
             email: this.email,
             password: this.password,
           });
-          this.$router.push("/admins/login");
+          this.$router.push("/login");
 
         } catch (error) {
           alert("メールアドレスがすでに登録されています");
@@ -79,11 +79,11 @@ export default {
 .register-page {
   width: 100%;
   height: auto;
-  margin-top: 30px;
+  margin-top: 50px;
 }
 
 .form {
-  max-width: 400px;
+  max-width: 540px;
   width: 100%;
   margin: 0 auto;
   padding: 70px;
@@ -93,19 +93,19 @@ export default {
 }
 
 .form-title {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  margin-top: -30px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .form input {
   outline: 0;
   background: #f2f2f2;
   width: 100%;
-  border: 0;
+  border: 1px solid #b6b6b6;
   border-radius: 4px;
-  
   padding: 15px;
   box-sizing: border-box;
   font-size: 16px;
@@ -145,5 +145,4 @@ export default {
   font-weight: bold;
   color: #4CAF50;
 }
-
 </style>

@@ -1,15 +1,13 @@
 <template>
   <div>
-    
-      
-      <nuxt />
-  </div>
+    <nuxt />
+  </div>    
 </template>
 
 <script>
 </script>
 
-<style>
+<style scoped>
 
 body {
   font-family: "Roboto";

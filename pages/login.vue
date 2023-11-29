@@ -3,13 +3,11 @@
     <div class="login">
       <div class="login-page">
         <div class="form">
-          <div class="login-logo"><img src="~/assets/img/super-small.png" alt="ロゴ小">
-          </div>
-          <p class="form-title">Counselor's Login</p>
+          <p class="form-title">ログイン</p>
           <form @submit.prevent="login">
             <emailForm v-model="email" />
             <passwordForm v-model="password" />
-            <button type="submit">Login</button>
+            <button type="submit">ログイン</button>
           </form>
         </div>
       </div>
@@ -25,39 +23,69 @@ export default {
   components: {
     emailForm,
     passwordForm
-
   },
 
   layout: 'user',
 
   auth: false,
+
   data() {
     return {
       email: '',
       password: '',
     };
   },
-  methods: {
-    async login() {
-      // バリデーションを実行
-      const isValid = await this.$refs.loginserver.validate();
 
-      if (isValid) {
-        // バリデーションが成功した場合、ログインを試行
-        try {
+  methods: {
+
+    async login() {
+      try {
+        const responseUser = await this.$axios.get(`http://localhost/api/user/`);
+        const userList = responseUser.data;
+
+        const responseAdmin = await this.$axios.get(`http://localhost/api/admin/`);
+        const adminList = responseAdmin.data;
+
+        const isUser = userList.some(user => user.email === this.email);
+
+        const isAdmin = adminList.some(admin => admin.email === this.email);
+
+        if (isUser) {
+          // laravelUserとしてログイン
           await this.$auth.loginWith('laravelUser', {
             data: {
               email: this.email,
               password: this.password,
             },
-            
+            headers: {
+              'Content-Type': 'application/json',
+            },
           });
+          console.log('Login successful as laravelUser');
           this.$router.push('/users/management');
-        } catch (error) {
-          alert("メールアドレスまたはパスワードが間違っています");
+
+        } else if (isAdmin) {
+          // laravelAdminとしてログイン
+          await this.$auth.loginWith('laravelAdmin', {
+            data: {
+              email: this.email,
+              password: this.password,
+            },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          console.log('Login successful as laravelAdmin');
+          this.$router.push('/admins/management');
+        } else {
+          console.log('Invalid user or admin');
+          alert('Invalid user or admin');
         }
-      }  
-    }
+      } catch (error) {
+        console.error('ログインに失敗しました', error);
+      }
+    },
+
   }, 
 } 
 </script>
@@ -77,40 +105,60 @@ export default {
 .login-page {
   width: 100%;
   height: auto;
-  margin-top: 60px;
+  margin-top: 100px;
 }
 
 .form {
   position: relative;
-  max-width: 400px;
+  max-width: 520px;
   width: 100%;
   margin: 0 auto;
-  padding: 100px 60px;
+  padding: 60px;
   text-align: center;
+  border-radius: 4px;
   background: #FFFFFF;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 
-.login-logo {
-  position: absolute;
-  top: 15px;
-  left: 20px;
-}
-
 .form-title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  margin-top: -10px;
+  margin-top: -20px;
   margin-bottom: 40px;
+  padding-top: 20px;
+}
+
+.user-type {
+  margin-bottom: 5px;
+}
+.user-type-select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #b6b6b6;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  background: #f2f2f2;
+  margin-bottom: 30px; 
+}
+
+.user-type-select option {
+  background-color: #fff;
+  color: #333;
+}
+
+.user-type-select:hover {
+  border-color: #555;
 }
 
 .form input {
   outline: 0;
   background: #f2f2f2;
   width: 100%;
-  border: 0;
-  padding: 15px;
+  border: 1px solid #b6b6b6;
+  border-radius: 4px;
+  padding: 14px;
   box-sizing: border-box;
   font-size: 16px;
   letter-spacing: 0.1em;
@@ -123,7 +171,7 @@ export default {
   border: 0;
   border-radius: 4px;
   margin-top: 30px;
-  padding: 15px;
+  padding: 16px;
   color: #FFFFFF;
   font-size: 16px;
   letter-spacing: 0.1em;

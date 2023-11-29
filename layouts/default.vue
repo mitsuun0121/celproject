@@ -6,9 +6,8 @@
     <Solve />
     <Price />
     <Coach />
-    <!--<News />
-    <site-footer />-->
-      
+    <!--<News />-->
+    <site-footer />
       <nuxt />
   </div>
 </template>
@@ -22,11 +21,10 @@ import Solve from '~/components/lpTops/Solve.vue'
 import Price from '~/components/lpTops/Price.vue'
 import Coach from '~/components/lpTops/Coach.vue'
 //import News from '~/components/lpTops/News.vue'
-//import SiteFooter from '~/components/lpTops/SiteFooter.vue'
+import SiteFooter from '~/components/lpTops/SiteFooter.vue'
 
 export default {
   components: {
-
     SiteHeader,
     MainVisual,
     Worry,
@@ -34,19 +32,17 @@ export default {
     Price,
     Coach,
     //News,
-    //SiteFooter
-    
+    SiteFooter,
     
   }
 }
 </script>
 
 <style>
-
 body {
   font-family: "Kosugi Maru", "Roboto";
-  margin: 0;
-  padding: 0;
+  margin: 0 ;
+  padding: 0 ;
   
 }
 
@@ -62,5 +58,4 @@ a:hover {
   cursor: pointer;
   
 }
-
 </style>

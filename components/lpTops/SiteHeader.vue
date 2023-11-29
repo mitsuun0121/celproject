@@ -9,7 +9,6 @@
           <li class="header-nav__item"><a class="header-nav__link" href="#Solve">CELの解決方法</a></li>
           <li class="header-nav__item"><a class="header-nav__link" href="#Price">料金説明</a></li>
           <li class="header-nav__item"><a class="header-nav__link" href="#Coach">コーチ紹介</a></li>
-          <li class="header-nav__item"><a class="header-nav__link" href="">お知らせ</a></li>
           <router-link class="counseling-btn" :to="{ path: '/guests/contact' }">無料カウンセリングはこちら</router-link>
         </ul>
       </nav>
@@ -20,7 +19,7 @@
 <script>
 export default {
   mounted() {
-    // アンカーリンクがクリックの際の処理
+    // アンカーリンクがクリックされたの際の処理
     document.querySelectorAll('.header-nav__link').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -47,7 +46,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 .header {
   font-family: "Kosugi Maru";
@@ -57,7 +55,7 @@ export default {
   justify-content: space-between;
   background-color: #fffff4;
   height: 60px;
-  padding: 30px 0;
+  padding: 60px 0;
 }
 
 .header-logo{
@@ -109,6 +107,10 @@ a.header-nav__link:hover::after {
 
 .header-nav__link{
   color: #3DAB3B;
+}
+
+.header-nav__link-span {
+  color: #f64949;
 }
 
 .counseling-btn {

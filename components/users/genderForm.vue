@@ -2,9 +2,9 @@
   <div>
     <ValidationProvider mode='lazy' v-slot="{ errors }" rules="required">
       <div class="gender-container">
-        <label for="gender">性別</label>
-        <input class="radio" type="radio" id="male" value="1" v-model="gender" name="性別" :class="{ 'has-error': errors.length > 0 }"><span class="radio-gender">男性</span>
-        <input class="radio" type="radio" id="female" value="2" v-model="gender" name="性別" :class="{ 'has-error': errors.length > 0 }"><span class="radio-gender">女性</span>
+        <label for="gender">Gender</label>
+        <input class="radio" type="radio" id="male" value="1" v-model="gender" name="性別" :class="{ 'has-error': errors.length > 0 }"><span class="radio-gender">male</span>
+        <input class="radio" type="radio" id="female" value="2" v-model="gender" name="性別" :class="{ 'has-error': errors.length > 0 }"><span class="radio-gender">female</span>
       </div>
       <div class="message">
         <span class="error-message">{{ errors[0] }}</span>
@@ -48,12 +48,9 @@ label {
   margin-left: 7px;
 }
 
-.radio {
-  margin-top: -2px;
-}
-
 .radio-gender {
   margin-left: -10px;
+  letter-spacing: 0.05em;
 }
 .message {
   text-align: left;
