@@ -1,73 +1,107 @@
-# celpj
+# celプロジェクト
 
-## Build Setup
-
-```bash
-# install dependencies
-$ yarn install
-
-# serve with hot reload at localhost:3000
-$ yarn dev
-
-# build for production and launch server
-$ yarn build
-$ yarn start
-
-# generate static project
-$ yarn generate
-```
-
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
-
-## Special Directories
-
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
-
-### `assets`
-
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
-
-### `components`
-
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
+・Child Edu Labolatoryという架空の会社のランディングページ
 
 
-### `pages`
+### `使用技術　環境構築`
 
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
+`・フロントエンド`
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
+  ・Nuxt.js　"nuxt": "^2.15.8"　"vue": "^2.7.10"
+    
+    $ npx create-nuxt-app <プロジェクト名>
+    $ yarn install
+    
+`・バックエンド` 
 
-### `plugins`
+  ・docker-compose.yml　version: '3.8'
+  
+  ・default.conf　nginx:1.21.1　- "80:80"
+  
+  ・Dockerfile　php:7.4.9-fpm
+  
+  ・php.ini
+  
+  ・Laravel8
+  
+    $ mkdir <プロジェクト名>
+    $ mkdir docker src
+    $ touch docker-compose.yml
+    $ mkdir mysql nginx php
+    $ mkdir mysql/data
+    $ touch mysql/my.cnf
+    $ touch nginx/default.conf
+    $ touch php/Dockerfile
+    $ touch php/php.ini
+    $ docker-compose up -d --build〇
+    $ docker-compose exec php bash
+    $ composer create-project "laravel/laravel=8.*" . --prefer-dist
 
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
+### `機能一覧`
+  ※ユーザー＝カウンセラー◦
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
+  ・無料カウンセリング予約／ ◦ 日程を選択、顧客情報を入力、DBに保存ができる
+  
+  ・マルチログイン（管理者）／ ◦ ユーザーのアカウントの作成、削除ができる　◦ ユーザーのカウンセリングの予定の確認ができる
 
-### `static`
+  ・マルチログイン（ユーザー）／ ◦ シフトの登録、変更、削除ができる　◦ 自分のカウンセリングの予定の確認、顧客の削除ができる
 
-This directory contains your static files. Each file inside this directory is mapped to `/`.
+### `テーブル設計`
 
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
+usersテーブル
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
+| カラム名 | 型 | primaryKey | Nullable | uniqueKey | 外部キー |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint | 〇 |  |  |  |
+| name | string |  |  |  |  |
+| email | string |  |  | 〇 |  |
+| password | string |  |  |  |  |
+| gender | integer |  |  |  |  |
+| user_id | unsigned bigint |  |  |  | 〇 |
+| created_at | timestamp |  |  |  |  |
+| updated_at | timestamp |  |  |  |  |
+| delete_at | timestamp |  |  |  |  |
+| api_token | string |  |  |  |  |
 
-### `store`
+guestsテーブル
 
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
+| カラム名 | 型 | primaryKey | Nullable | uniqueKey | 外部キー |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint | 〇 |  |  |  |
+| name | string |  |  |  |  |
+| kana | string |  |  |  |  |
+| email | string |  |  | 〇 |  |
+| phone | string |  |  |  |  |
+| gender | integer |  |  |  |  |
+| message | string |  |  |  |  |
+| date | date |  |  |  |  |
+| timeSlot | time |  |  |  |  |
+| user_id | unsigned bigint |  |  |  | 〇 |
+| created_at | timestamp |  |  |  |  |
+| updated_at | timestamp |  |  |  |  |
+| delete_at | timestamp |  |  |  |  |
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+user_shiftsテーブル
+
+| カラム名 | 型 | primaryKey | Nullable | uniqueKey | 外部キー |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint | 〇 |  |  |  |
+| users(id) | unsigned bigint |  |  |  | 〇 |
+| guests(id) | unsigned bigint |  |  |  | 〇 |
+| shift_date | date |  |  |  |  |
+| start_time | time |  |  |  |  |
+| end_time | time |  |  |  |  |
+| created_at | timestamp |  |  |  |  |
+| updated_at | timestamp |  |  |  |  |
+
+adminsテーブル
+
+| カラム名 | 型 | primaryKey | Nullable | uniqueKey | 外部キー |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint | 〇 |  |  |  |
+| name | string |  |  |  |  |
+| email | string |  |  | 〇 |  |
+| password | string |  |  |  |  |
+| created_at | timestamp |  |  |  |  |
+| updated_at | timestamp |  |  |  |  |
 # celproject
-# celproject2
-# celproject2
-# celproject3
