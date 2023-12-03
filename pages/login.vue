@@ -42,15 +42,20 @@ export default {
       try {
         const responseUser = await this.$axios.get(`http://localhost/api/user/`);
         const userList = responseUser.data;
+        console.log('Response from server:', responseUser.data);
+
+        const isUser = userList.some(user => user.email === this.email);
+        console.log('Response from user:', isUser);
 
         const responseAdmin = await this.$axios.get(`http://localhost/api/admin/`);
         const adminList = responseAdmin.data;
-
-        const isUser = userList.some(user => user.email === this.email);
+        console.log('Response from server:', responseAdmin.data);
 
         const isAdmin = adminList.some(admin => admin.email === this.email);
+        console.log('Response from admin:', isAdmin);
 
         if (isUser) {
+          
           // laravelUserとしてログイン
           await this.$auth.loginWith('laravelUser', {
             data: {
@@ -61,7 +66,12 @@ export default {
               'Content-Type': 'application/json',
             },
           });
+          
           console.log('Login successful as laravelUser');
+          console.log('Is logged in:', this.$auth.loggedIn);
+          console.log('ユーザー情報:', this.$auth.user);
+          console.log('ユーザー名:', this.$auth.user.name);
+
           this.$router.push('/users/management');
 
         } else if (isAdmin) {
@@ -76,6 +86,9 @@ export default {
             },
           });
           console.log('Login successful as laravelAdmin');
+          console.log('ユーザー情報:', this.$auth.user);
+          console.log('ユーザー名:', this.$auth.user.name);
+
           this.$router.push('/admins/management');
         } else {
           console.log('Invalid user or admin');

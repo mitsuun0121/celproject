@@ -101,9 +101,9 @@ export default {
         url: 'http://localhost',
 
         endpoints: {
-          login: { url: '/api/admin/login', method: 'post' },
+          login: { url: '/api/admin/login', method: 'post', propertyName: 'access_token' },
           logout: { url: '/api/admin/logout', method: 'post' },
-          refresh: { url: '/api/admin/refresh', method: 'post' },
+          refresh: { url: '/api/admin/refresh', method: 'post', propertyName: 'access_token' },
           user: { url: '/api/admin/user', method: 'get' },
         },
 

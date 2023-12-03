@@ -32,4 +32,5 @@ export const actions = {
         // 予約データをミューテーションを通じて更新
         commit('setReservationData', data);
     },
+
 };

@@ -268,6 +268,7 @@ export default {
   created() {
     this.todayReservaition(); // 当日の日付を設定
     this.fetchGuestList();
+  
   },
 
   methods: {
@@ -364,11 +365,11 @@ export default {
     // ログアウト
     async logout() {
       try {
-        // ローカルストレージからトークンを削除
-        localStorage.removeItem('access_token');
-
         // フロント側でのログアウト処理
         await this.$auth.logout();
+
+        // ローカルストレージからトークンを削除
+        localStorage.removeItem('access_token');
 
         this.$router.push("/login");
       } catch (error) {

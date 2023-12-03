@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar app color="#fffff4" height="80px">
       <v-app-bar-nav-icon @click.stop="toggleSidebar"></v-app-bar-nav-icon>
-      <v-toolbar-title v-if="$auth.loggedIn" style="letter-spacing: 0.05em;">Welcome {{ $auth.user.user.name }}
+      <v-toolbar-title v-if="$auth.loggedIn" style="letter-spacing: 0.05em;">Welcome {{ $auth.user.name }}
         さん</v-toolbar-title>
       <!-- 右側のアイコンやボタンなどを追加 -->
       <v-spacer></v-spacer>
@@ -183,7 +183,7 @@
                   <div style="font-size: 20px; font-weight: bold; color: #ffffff; letter-spacing: 0.05em; white-space: nowrap; margin-top: 25px;">予約リスト</div>
                 </v-toolbar>
 
-                <!-- 現在のページに対応する日付のデータを表示 -->
+                <!-- 当日の予約データを表示 -->
                 <v-data-table :items="this.reservationData" :headers="reservetionHeaders" :show-no-data="false" hide-default-footer style="border-bottom: 1px solid #e2e2e2;">
                   <template v-slot:item="{ item }">
                     <tr style="height: 40px;">
@@ -455,6 +455,9 @@ export default {
           console.log('カウンセラーが登録されました。', response.data);
           this.showSnackbar({ message: 'カウンセラーが登録されました。', color: 'success' });
         }
+
+        this.fetchUserList();
+
       } catch (error) {
         console.error('新規登録に失敗しました:', error);
         this.showSnackbar({ message: 'カウンセラーの登録に失敗しました。', color: 'error' });
@@ -545,7 +548,6 @@ export default {
       if (counselor) {
         this.reservationCounselor(counselor);
         this.selectedCounselor = counselor;
-        
       }
     },
 
