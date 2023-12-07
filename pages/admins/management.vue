@@ -151,7 +151,7 @@
               item-text="name"
               item-value="id"
               label="カウンセラーを選択"
-              @change="reservationListData"
+              @change="reservationCounselor"
             ></v-select>
             </template>
           </v-col>
@@ -169,6 +169,7 @@
                 locale="en"
                 elevation="10"
                 width="400"
+                scrollable
               ></v-date-picker>
             </template>
           </v-col>
@@ -193,8 +194,12 @@
                     </tr>
                   </template>
                   <template v-slot:no-data>
-                    <!-- データがない場合のメッセージ -->
-                    <div class="text-center" style="color: red; font-size: 16px;">
+                    <!-- カウンセラーが選択されていない場合のメッセージ -->
+                    <div v-if="!selectedCounselor" class="text-center" style="color: red; font-size: 16px;">
+                      カウンセラーが選択されていません。
+                    </div>
+                    <!-- 予約データがない場合のメッセージ -->
+                    <div v-else class="text-center" style="color: red; font-size: 16px;">
                       予約データがありません。
                     </div>
                   </template>
@@ -348,7 +353,7 @@ export default {
   // 当日の予約データを取得
   created() {
     this.todayReservaition(); // 当日の日付を設定
-    this.reservationCounselor();
+    //this.reservationCounselor();
   },
 
   methods: {
@@ -512,23 +517,17 @@ export default {
     async fetchUserList() {
       try {
         const response = await this.$axios.get(`http://localhost/api/user/`);
-        const userList = response.data;
 
-        // 各カウンセラーの予約を取得
-        for (const counselor of userList) {
-          const reservations = await this.reservationCounselor(counselor.id);
-          counselor.reservations = reservations;
-        }
-        this.userList = userList;
+        this.userList = response.data;
 
       } catch (error) {
         console.error('カウンセラーの取得に失敗しました', error);
       }
     },
 
-    // 当日の日付を設定
+    // 予約当日の日付を設定
     todayReservaition() {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date(Date.now() + 9 * 3600000).toISOString().split('T')[0];
       this.selectedDate = today;
       this.clickedDate = today;
     },
@@ -538,17 +537,6 @@ export default {
       this.clickedDate = this.selectedDate;
       console.log('選択された日付:', this.clickedDate);
       this.reservationCounselor(this.selectedCounselor);
-    },
-
-    // 選択されたカウンセラーの予約
-    reservationListData(counselor) {
-      console.log('選択されたカウンセラー:', counselor);
-      console.log('ID:', counselor);
-
-      if (counselor) {
-        this.reservationCounselor(counselor);
-        this.selectedCounselor = counselor;
-      }
     },
 
     // 各カウンセラーの予約データを取得
@@ -570,8 +558,8 @@ export default {
           return timeA - timeB;
         });
         console.log('ソートされた予約データ:', this.reservationData);
-
         this.$forceUpdate();
+
       } catch (error) {
         console.error('予約データの取得に失敗しました', error);
       }

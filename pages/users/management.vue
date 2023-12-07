@@ -379,7 +379,7 @@ export default {
 
     // 今日の日付を取得
     isToday(date) {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date(Date.now() + 9 * 3600000).toISOString().split('T')[0];
       return date === today;
     },
 
