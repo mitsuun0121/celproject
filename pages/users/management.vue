@@ -30,7 +30,7 @@
 
     <!-- シフトフォーム／登録・編集・削除／を表示するテーブル -->
     <template v-if="showShiftList">
-      <v-container style="margin-top: 110px; margin-right: 140px; max-width: 1000px;">
+      <v-container style="height: 1px; margin-top: 140px; margin-right: 140px; width: 1000px;">
 
         <!-- ツールバー -->
         <v-toolbar style="height: 85px; background-color: #66BB6A;">
@@ -46,10 +46,10 @@
         </v-toolbar>
        
         <!-- シフト設定の表示 -->
-        <v-data-table @submit.prevent="userShift"
+        <v-data-table fixed-header height="405px" @submit.prevent="userShift"
           :items="shiftTableDate()"
           :headers="shiftSettingHeaders" item-key="date"
-          :options="{ itemsPerPage: 31 }" hide-default-footer style="height: 450px; overflow-y: auto; margin-top: 10px; border-bottom: 1px solid #e2e2e2;">
+          :options="{ itemsPerPage: 31 }" hide-default-footer>
 
           <template v-slot:item="{ item }">
             <tr style="height: 50px;">
@@ -103,7 +103,7 @@
         <!-- 予約リスト -->
         <v-col>
           <template v-if="reservationList">
-            <v-container style="margin-top: -10px; width: 500px;">
+            <v-container style="height: 1px; margin-top: -10px; width: 500px;">
               <!-- ツールバー -->
               <v-toolbar style="height: 85px; background-color: #66BB6A; border-radius: 4px 4px 0 0;">
                 <v-icon style="margin-right: 30px; color: #ffffff; margin-top: 25px;">mdi-calendar-month-outline</v-icon>
