@@ -128,4 +128,17 @@ adminsテーブル
 | password | string |  |  |  |  |
 | created_at | timestamp |  |  |  |  |
 | updated_at | timestamp |  |  |  |  |
+
+jobsテーブル
+
+| カラム名 | 型 | primaryKey | Nullable | uniqueKey | 外部キー |
+| --- | --- | --- | --- | --- | --- |
+| id | bigintcrement | 〇 |  |  |  |
+| queue | string |  |  |  |  |
+| payload | longtext |  |  |  |  |
+| attemps | unsigned tiny int |  |  |  |  |
+| reserved_at | unsigned int |  |  |  |  |
+| available_at | unsigned int |  |  |  |  |
+| created_at | unsigned int |  |  |  |  |
+
 # celproject
