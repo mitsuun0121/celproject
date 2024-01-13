@@ -67,11 +67,11 @@
     <!-- 新規登録 -->
     <template v-if="register">
       <v-container style="width: 500px; height: 1px;">
-        <v-row justify="center" style="margin-top: 90px;">
+        <v-row justify="center" style="margin-top: 110px;">
 
           <!-- 登録フォーム -->
           <v-col>
-            <v-card class="elevation-12" style="height: 550px; background-color: #fbfbfb;">
+            <v-card class="elevation-12" style="height: 470px; background-color: #fbfbfb;">
 
               <!-- ツールバー -->
               <v-toolbar color="#66BB6A" style="height: 85px;">
@@ -81,10 +81,10 @@
 
               <v-card-text class="text-center">
                 <v-form @submit.prevent="userRegister" ref="registerserver">
-                  <v-text-field v-model="name" label="名前" outlined required :rules="nameRules" class="mb-1" style="margin-top: 20px; margin-left: 30px; margin-right: 30px;"></v-text-field>
-                  <v-select v-model="gender" :items="genders" label="性別" outlined required :rules="genderRules" class="mb-1" style="margin-left: 30px; margin-right: 30px;"></v-select>
-                  <v-text-field v-model="email" label="メールアドレス" outlined required :rules="emailRules" class="mb-1" style="margin-left: 30px; margin-right: 30px;"></v-text-field>
-                  <v-text-field v-model="password" label="パスワード" type="password" outlined required :rules="passwordRules" class="mb-1" style="margin-left: 30px; margin-right: 30px;"></v-text-field>
+                  <v-text-field v-model="name" label="名前" outlined dense required :rules="nameRules" class="mb-1" style="margin-top: 20px; margin-left: 30px; margin-right: 30px;"></v-text-field>
+                  <v-select v-model="gender" :items="genders" label="性別" outlined dense required :rules="genderRules" class="mb-1" style="margin-left: 30px; margin-right: 30px;"></v-select>
+                  <v-text-field v-model="email" label="メールアドレス" outlined dense required :rules="emailRules" class="mb-1" style="margin-left: 30px; margin-right: 30px;"></v-text-field>
+                  <v-text-field v-model="password" label="パスワード" type="password" outlined dense required :rules="passwordRules" class="mb-1" style="margin-left: 30px; margin-right: 30px;"></v-text-field>
                   <v-btn @click="userRegister()" color="#3DAB3B" class="mr-9" style="font-size: 16px; padding: 20px; color: #ffffff; margin-bottom: 100px; margin-left: 115px;">登 録</v-btn>
                   <v-btn @click.prevent="resetForm" style="margin-bottom: 100px;">クリア</v-btn>
                 </v-form>
@@ -241,22 +241,28 @@
     <!-- 全予約リスト -->
     <template v-if="allReservations">
       <v-container style="height: 1px; margin-left: 350px; width: 1100px;">
-        <v-row justify="center" style="margin-top: 60px;">
+        <v-row justify="center" style="margin-top: 70px;">
 
           <!-- 検索フォーム -->
           <v-col>
-            <v-text-field v-model="searchQuery" label="名前／フリガナ／メールアドレス／電話番号／予約日のいずれかを入力してください" style="width: 700px;"></v-text-field>
+            <v-text-field v-model="searchQuery" label="名前／フリガナ／性別／メールアドレス／電話番号／予約日のいずれかを入力" hint="※名前／フリガナで検索する際は、姓と名の間に全角スペースを入力。" clearable prepend-inner-icon="mdi-magnify"  outlined dense persistent-placeholder style="width: 500px; font-size: 14px;"></v-text-field>
           </v-col>
           <v-col>
-            <v-btn @click="searchReservations" style="margin-top: 10px; padding: 20px; font-size: 16px; color: #ffffff; background-color: #0E74D2;">検 索</v-btn>
+            <v-btn @click="searchReservations" style="padding: 20px; font-size: 16px; color: #ffffff; background-color: #0E74D2;">検 索</v-btn>
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col>
+            <v-btn @click="fetchAllReservations" style="font-size: 14px; color: #ffffff; background-color: #086d06; padding: 20px; 0">全件取得</v-btn>
           </v-col>
           <v-col>
-              <v-btn @click="fetchAllReservations" style="font-size: 14px; color: #ffffff; background-color: #086d06; margin-top: 10px; padding: 20px;">全件取得</v-btn>
+            <div style="font-size: 18px; font-weight: bold; margin-top: 10px;">
+              <span style="color: #0E74D2;">{{ searchReservationCount }}</span> / <span style="color: #086d06;">{{ allReservationCount }}</span><span style="font-size: 12px;"> 件中 (全)</span>
+            </div>
           </v-col>
 
           <!-- 全予約リストを表示 -->
           <v-col>
-            <v-card class="elevation-12" style="height: 490px; margin-top: -25px; background-color: #fbfbfb;">
+            <v-card class="elevation-12" style="height: 485px; margin-top: -25px; background-color: #fbfbfb;">
 
               <!-- ツールバー -->
               <v-toolbar color="#66BB6A" style="width: 1200px; height: 85px;">
@@ -354,6 +360,11 @@ export default {
       // 検索／予約リスト
       allReservations: false,
       searchQuery: '',
+
+      // 全予約データ件数をカウント
+      allReservationCount: 0,
+      // 検索した予約データ件数をカウント
+      searchReservationCount: 0,
 
       formValided: false,
       
@@ -676,6 +687,14 @@ export default {
           const timeB = new Date(`1970/01/01 ${b.timeSlot}`);
           return timeA - timeB;
         });
+
+        // 全予約件数のカウントを設定
+        this.allReservationCount = this.allReservationData.length;
+
+        
+        // 検索の件数もデフォルトは全件取得
+        this.searchReservationCount = this.allReservationCount;
+
         console.log('全ての予約データ:', this.allReservationData);
         this.$forceUpdate();
 
@@ -692,17 +711,23 @@ export default {
         return (
           item.name.includes(this.searchQuery) ||
           item.kana.includes(this.searchQuery) ||
+          this.formatGender(item.gender).includes(this.searchQuery) ||
           item.email.includes(this.searchQuery) ||
           item.phone.includes(this.searchQuery) ||
           item.date.includes(this.searchQuery)
         );
       });
 
+      // 検索結果のデータを保存
       this.allReservationData = filteredData;
+
+      // 検索結果の件数を設定
+      this.searchReservationCount = this.allReservationData.length;
+
       this.$forceUpdate();
 
       // 検索フィールドをクリア
-      this.searchQuery = ''; 
+      this.searchQuery = '';
     },
 
     // 予約時間の秒を表示しないように設定
