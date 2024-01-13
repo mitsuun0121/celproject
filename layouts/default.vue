@@ -4,6 +4,7 @@
     <div v-if="showBackground" class="fiction-background"></div>
     <div v-if="showMessage" class="fiction-message fadeOut">
       <p>このサイトはフィクションです</p>
+      <p class="copy-right">© 2023 Child Edu Laboratory inc.</p>
     </div>
     
     <!-- メインコンテンツ表示部分 -->
@@ -57,7 +58,7 @@ export default {
     setTimeout(() => {
       this.showMessage = false;
       this.showBackground = false;
-    }, 3000);
+    }, 4000);
   },
 
 }
@@ -91,7 +92,6 @@ a:hover {
   width: 100vw;
   height: 100vh;
   background-color: #000000;
-  
 }
 
 .fiction-message {
@@ -100,11 +100,11 @@ a:hover {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  font-size: 24px;
+  font-size: 26px;
   color: #fff;
   padding: 10px;
   background-color: #000000;
-  animation: fadeOut 3.5s ease-in-out; /* フェードアウトのアニメーション */
+  animation: fadeOut 4.5s ease-in-out; /* フェードアウトのアニメーション */
 }
 
 @keyframes fadeOut {
@@ -114,5 +114,10 @@ a:hover {
   100% {
     opacity: 0;
   }
+}
+
+.copy-right {
+  font-size: 16px;
+  margin-top: 20px;
 }
 </style>
