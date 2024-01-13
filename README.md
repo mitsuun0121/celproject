@@ -1,6 +1,8 @@
-# celプロジェクト
+# CELプロジェクト
 
 ・Child Edu Labolatoryという架空の会社のランディングページ
+
+・管理画面／管理者用、ユーザー用
 
 
 ### `使用技術　環境構築`
@@ -33,19 +35,41 @@
     $ touch nginx/default.conf
     $ touch php/Dockerfile
     $ touch php/php.ini
-    $ docker-compose up -d --build〇
+    $ docker-compose up -d --build
     $ docker-compose exec php bash
     $ composer create-project "laravel/laravel=8.*" . --prefer-dist
 
 ### `機能一覧`
-  ※ユーザー＝カウンセラー◦
+  ※ユーザー＝カウンセラー
 
-  ・無料カウンセリング予約／ ◦ 日程を選択、顧客情報を入力、DBに保存ができる
+  ・無料カウンセリング予約
   
-  ・マルチログイン（管理者）／ ◦ ユーザーのアカウントの作成、削除ができる　◦ ユーザーのカウンセリングの予定の確認ができる
+  　◦ 日程を選択、顧客情報を入力、DBに保存ができる<br><br>
+  
 
-  ・マルチログイン（ユーザー）／ ◦ シフトの登録、変更、削除ができる　◦ 自分のカウンセリングの予定の確認、顧客の削除ができる
+  ・メール送信  
+    
+  　◦ 無料カウンセリングが予約されたら、顧客と担当ユーザーにメールが送信される
+  
+  　◦ カウンセリング当日に顧客にリマインドメールが送信される<br><br>
+   
+  
+  ・マルチログイン（管理者）
+  
+  　◦ ユーザーのアカウントの作成、削除ができる
+  
+  　◦ ユーザーのカウンセリングの予定の確認ができる
+  
+  　◦ 全顧客リストの確認と顧客の検索ができる<br><br>
+   
 
+  ・マルチログイン（ユーザー）
+  
+  　◦ シフトの登録、変更、削除ができる
+  
+  　◦ 自分のカウンセリングの予定の確認、顧客の削除ができる<br><br>
+
+   
 ### `テーブル設計`
 
 usersテーブル
@@ -104,4 +128,17 @@ adminsテーブル
 | password | string |  |  |  |  |
 | created_at | timestamp |  |  |  |  |
 | updated_at | timestamp |  |  |  |  |
+
+jobsテーブル
+
+| カラム名 | 型 | primaryKey | Nullable | uniqueKey | 外部キー |
+| --- | --- | --- | --- | --- | --- |
+| id | bigintcrement | 〇 |  |  |  |
+| queue | string |  |  |  |  |
+| payload | longtext |  |  |  |  |
+| attemps | unsigned tiny int |  |  |  |  |
+| reserved_at | unsigned int |  |  |  |  |
+| available_at | unsigned int |  |  |  |  |
+| created_at | unsigned int |  |  |  |  |
+
 # celproject
