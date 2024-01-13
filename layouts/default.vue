@@ -1,14 +1,23 @@
 <template>
   <div>
-    <site-header />
-    <main-visual />
-    <worry />
-    <Solve />
-    <Price />
-    <Coach />
-    <!--<News />-->
-    <site-footer />
-      <nuxt />
+    <!-- アニメーション表示部分 -->
+    <div v-if="showBackground" class="fiction-background"></div>
+    <div v-if="showMessage" class="fiction-message fadeOut">
+      <p>このサイトはフィクションです</p>
+    </div>
+    
+    <!-- メインコンテンツ表示部分 -->
+    <div v-if="!showMessage">
+      <site-header />
+      <main-visual />
+      <worry />
+      <Solve />
+      <Price />
+      <Coach />
+      <!--<News />-->
+      <site-footer />
+    </div>
+    <nuxt />
   </div>
 </template>
 
@@ -34,7 +43,23 @@ export default {
     //News,
     SiteFooter,
     
-  }
+  },
+
+  data() {
+    return {
+      showBackground: true,
+      showMessage: true,
+    };
+  },
+
+  mounted() {
+    // 3秒間アニメーションを表示した後にコンテンツを表示
+    setTimeout(() => {
+      this.showMessage = false;
+      this.showBackground = false;
+    }, 3000);
+  },
+
 }
 </script>
 
@@ -57,5 +82,37 @@ a:hover {
   opacity: 0.8;
   cursor: pointer;
   
+}
+
+.fiction-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000000;
+  
+}
+
+.fiction-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 24px;
+  color: #fff;
+  padding: 10px;
+  background-color: #000000;
+  animation: fadeOut 3.5s ease-in-out; /* フェードアウトのアニメーション */
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 </style>

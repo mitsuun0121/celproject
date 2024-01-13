@@ -9,6 +9,7 @@ export default {
   layout: 'default',
 
   auth: false,
+
 }
 </script>
 
