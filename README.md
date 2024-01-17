@@ -103,7 +103,6 @@ guestsテーブル
 | user_id | unsigned bigint |  |  |  | 〇 |
 | created_at | timestamp |  |  |  |  |
 | updated_at | timestamp |  |  |  |  |
-| delete_at | timestamp |  |  |  |  |
 
 user_shiftsテーブル
 
