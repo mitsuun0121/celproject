@@ -27,14 +27,20 @@
   ・Laravel8
   
     $ mkdir <プロジェクト名>
+    $ cd <プロジェクト名>
     $ mkdir docker src
     $ touch docker-compose.yml
+    $ cd docker
     $ mkdir mysql nginx php
     $ mkdir mysql/data
     $ touch mysql/my.cnf
     $ touch nginx/default.conf
     $ touch php/Dockerfile
     $ touch php/php.ini
+    $ cd ../
+    （※my.cnf default.conf Dockerfile php.iniの内容は適宜設定して下さい。）
+    
+    Docker Desktopを起動
     $ docker-compose up -d --build
     $ docker-compose exec php bash
     $ composer create-project "laravel/laravel=8.*" . --prefer-dist
