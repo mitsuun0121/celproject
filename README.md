@@ -1,6 +1,7 @@
 # CELプロジェクト
 
-・Child Edu Labolatoryという架空の会社のランディングページ
+・Child Edu Labolatoryという架空の会社のランディングページ<br><br>
+![Demo](https://raw.githubusercontent.com/mitsuun0121/README.gif/main/celpj_lp.gif)<br><br> 
 
 ・管理画面／管理者用、ユーザー用
 
