@@ -1,10 +1,19 @@
 # CELプロジェクト
 
 ・Child Edu Labolatoryという架空の会社のランディングページ<br><br>
-![Demo](https://raw.githubusercontent.com/mitsuun0121/README.gif/main/celpj_lp.gif)<br><br> 
+![Demo](https://raw.githubusercontent.com/mitsuun0121/README.gif/main/celpj_lp.gif)<br><br>
 
-・管理画面／管理者用、ユーザー用
+・無料カウンセリングの予約<br><br>
+![Demo](https://raw.githubusercontent.com/mitsuun0121/README.gif/main/celpj_lp_resavation.gif)<br><br>
 
+・管理画面／管理者用　ユーザーのアカウント作成<br><br>
+![Demo](https://raw.githubusercontent.com/mitsuun0121/README.gif/main/celpj_dashboad_admin.gif)<br><br>
+
+・管理画面／ユーザー用　シフトの登録、変更、削除<br><br>
+![Demo](https://raw.githubusercontent.com/mitsuun0121/README.gif/main/celpj_dashboad_user_1.gif)<br><br>
+
+・管理画面／ユーザー用　自分のカウンセリングの予定の確認、顧客の削除<br><br>
+![Demo](https://raw.githubusercontent.com/mitsuun0121/README.gif/main/celpj_dashboad_user_2.gif)<br><br>
 
 ### `使用技術　環境構築`
 
